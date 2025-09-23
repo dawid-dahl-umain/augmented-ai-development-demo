@@ -1,10 +1,13 @@
-#!/usr/bin/env node
-import { fileURLToPath } from "node:url";
+import { CliRunner } from "#src/adapters/cli/runner/cli-runner"
 
-export const greet = (name: string): string => `Hello, ${name}!`;
+const main = (): number => {
+    const [, , ...argv] = process.argv
 
-const executedDirectly = fileURLToPath(import.meta.url) === process.argv[1];
-if (executedDirectly) {
-  const [, , name = "world"] = process.argv;
-  console.log(greet(name));
+    const runner = new CliRunner()
+
+    return runner.run(argv)
 }
+
+const code = main()
+
+if (code !== 0) process.exitCode = code

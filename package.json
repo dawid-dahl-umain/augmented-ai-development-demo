@@ -1,18 +1,33 @@
 {
-  "name": "aaid-demo",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "start": "node dist/index.js",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "coverage": "vitest run --coverage"
-  },
-  "devDependencies": {
-    "typescript": "~5.8.3",
-    "vitest": "^3.2.4",
-    "@types/node": "^22.7.5"
-  }
+    "name": "aaid-demo",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm --out-dir dist --clean",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "start": "node dist/index.js",
+        "prestart": "pnpm run build",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "coverage": "vitest run --coverage",
+        "lint": "eslint . -c eslint.config.js",
+        "lint:fix": "eslint . -c eslint.config.js --fix",
+        "check": "pnpm run lint && pnpm run test"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.35.0",
+        "@types/node": "^22.7.5",
+        "eslint": "^9.35.0",
+        "typescript": "~5.8.3",
+        "tsup": "^8.0.1",
+        "typescript-eslint": "^8.44.0",
+        "vitest": "^3.2.4"
+    },
+    "dependencies": {
+        "aaid": "^0.1.2"
+    },
+    "imports": {
+        "#src/*": "./dist/*"
+    }
 }
