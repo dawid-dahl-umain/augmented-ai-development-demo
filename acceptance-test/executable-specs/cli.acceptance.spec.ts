@@ -37,7 +37,7 @@ describe("Epic: Game Initialization", () => {
 
 describe("Epic: Making Moves", () => {
     describe("Feature: Player makes a move", () => {
-        it("should valid move on empty cell", async () => {
+        it("should accept a valid move on an empty cell", async () => {
             // Given
             await dsl.game.start()
 
