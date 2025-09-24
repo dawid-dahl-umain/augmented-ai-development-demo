@@ -102,19 +102,21 @@ Player X wins!
 ```
 aaid-demo/
   acceptance-test/
-    drivers/           # runs compiled CLI (build-once per test run)
-    dsl/               # Given/When/Then helpers
-    executable-specs/  # end-to-end acceptance tests
+    drivers/                 # runs compiled CLI (build-once per test run)
+    dsl/                     # Given/When/Then helpers
+    executable-specs/        # end-to-end acceptance tests
+  specification-package/
+    tictactoe-specs.md       # user stories + bdd scenarios
   src/
     domain/
-      tic-tac-toe/     # pure domain (UI-agnostic)
-        ports.ts       # presenter contract (dependency inversion)
+      tic-tac-toe/           # pure domain (UI-agnostic)
+        ports.ts             # presenter contract (dependency inversion)
     adapters/
       cli/
-        input/         # driving adapter (parses CLI lines → domain commands)
-        output/        # driven adapter (Presenter impl: templates → text)
-        runner/        # driving adapter/composer (argv/verbosity/exit codes)
-    index.ts           # composition root (process argv → runner)
+        input/               # driving adapter (parses CLI lines → domain commands)
+        output/              # driven adapter (Presenter impl: templates → text)
+        runner/              # driving adapter/composer (argv/verbosity/exit codes)
+    index.ts                 # composition root (process argv → runner)
 ```
 
 -   Domain is IO-free; adapters handle IO; index wires them.
