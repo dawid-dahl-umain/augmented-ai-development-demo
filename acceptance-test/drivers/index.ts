@@ -13,6 +13,7 @@ const execFilePromise = (
                 typeof (error as unknown as { code?: number }).code === "number"
                     ? (error as unknown as { code: number }).code
                     : 0
+
             resolve({ stdout: String(stdout), stderr: String(stderr), code })
         })
     })
@@ -33,7 +34,7 @@ const run = async (args: string[]): Promise<CliResult> => {
     await ensureBuild()
 
     const result = await execFilePromise(process.execPath, [
-        "dist/index.js",
+        "dist/index.js", // System Under Test (SUT)
         ...args
     ])
 
