@@ -27,7 +27,7 @@ describe("Epic: Game Initialization", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("1")
+            await dsl.game.playMoves("1")
 
             // Then
             dsl.game.confirmOutputContains("---+---+---")
@@ -42,7 +42,7 @@ describe("Epic: Making Moves", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("5")
+            await dsl.game.playMoves("5")
 
             // Then
             dsl.game.confirmOutputContains("  4 | X | 6")
@@ -56,7 +56,7 @@ describe("Epic: Making Moves", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("1,2")
+            await dsl.game.playMoves("1,2")
 
             // Then
             dsl.game.confirmOutputContains("Round 2")
@@ -70,7 +70,7 @@ describe("Epic: Making Moves", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("2,2")
+            await dsl.game.playMoves("2,2")
 
             // Then
             dsl.game.confirmOutputContains("Position already taken at 2")
@@ -81,7 +81,7 @@ describe("Epic: Making Moves", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("10")
+            await dsl.game.playMoves("10")
 
             // Then
             dsl.game.confirmOutputContains("Invalid position: choose 1-9")
@@ -92,7 +92,7 @@ describe("Epic: Making Moves", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("abc")
+            await dsl.game.playMoves("abc")
 
             // Then
             dsl.game.confirmOutputContains("Invalid input: enter a number 1-9")
@@ -107,7 +107,7 @@ describe("Epic: Win Detection", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("1,4,2,5,3")
+            await dsl.game.playMoves("1,4,2,5,3")
 
             // Then
             dsl.game.confirmOutputContains("Player X wins!")
@@ -118,7 +118,7 @@ describe("Epic: Win Detection", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("1,2,3,5,7,8")
+            await dsl.game.playMoves("1,2,3,5,7,8")
 
             // Then
             dsl.game.confirmOutputContains("Player O wins!")
@@ -129,7 +129,7 @@ describe("Epic: Win Detection", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("1,2,5,3,9")
+            await dsl.game.playMoves("1,2,5,3,9")
 
             // Then
             dsl.game.confirmOutputContains("Player X wins!")
@@ -140,7 +140,7 @@ describe("Epic: Win Detection", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("3,1,5,2,7")
+            await dsl.game.playMoves("3,1,5,2,7")
 
             // Then
             dsl.game.confirmOutputContains("Player X wins!")
@@ -155,7 +155,7 @@ describe("Epic: Game End States", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("1,2,3,5,6,4,7,9,8")
+            await dsl.game.playMoves("1,2,3,5,6,4,7,9,8")
 
             // Then
             dsl.game.confirmOutputContains("It's a draw!")
@@ -168,7 +168,7 @@ describe("Epic: Game End States", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("1")
+            await dsl.game.playMoves("1")
 
             // Then
             dsl.game.confirmOutputContains("O to move")
@@ -179,7 +179,7 @@ describe("Epic: Game End States", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("1,4,2,5,3,6")
+            await dsl.game.playMoves("1,4,2,5,3,6")
 
             // Then
             dsl.game.confirmOutputContains("Game is over. Player X won!")
@@ -194,7 +194,7 @@ describe("Epic: Technical Acceptance Criteria (Non-functional)", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("1,4,2")
+            await dsl.game.playMoves("1,4,2")
 
             // Then
             dsl.game.confirmOutputContains("---+---+---")
@@ -208,7 +208,7 @@ describe("Epic: Technical Acceptance Criteria (Non-functional)", () => {
             await dsl.game.start()
 
             // When
-            await dsl.game.playRawMoves("10")
+            await dsl.game.playMoves("10")
 
             // Then
             dsl.game.confirmOutputContains("Invalid position: choose 1-9")

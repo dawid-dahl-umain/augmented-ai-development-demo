@@ -27,7 +27,7 @@ export const game = {
         const result = await driver.cli.run(["play", "--moves", csv])
         lastResult = result
     },
-    playRawMoves: async (movesCsv: string): Promise<CliResult> => {
+    playMoves: async (movesCsv: string): Promise<CliResult> => {
         const result = await driver.cli.run(["play", "--moves", movesCsv])
         lastResult = result
         return result
