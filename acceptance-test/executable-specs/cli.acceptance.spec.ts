@@ -245,7 +245,7 @@ describe("Epic: Game End States", () => {
             dsl.game.confirmOutputContains("O to move")
 
             // And
-            dsl.board.confirmShowsGridWithPositionsNumberedOneThroughNine()
+            dsl.board.confirmBoardStateDisplayed()
         })
 
         it("should not be possible to make moves after game ends", async () => {
@@ -272,7 +272,7 @@ describe("Epic: Technical Acceptance Criteria (Non-functional)", () => {
             await dsl.game.playMoves("1")
 
             // Then
-            dsl.board.confirmShowsGridWithPositionsNumberedOneThroughNine()
+            dsl.board.confirmUpdatedBoardDisplayed()
 
             // And
             dsl.game.confirmOutputContains("O to move")

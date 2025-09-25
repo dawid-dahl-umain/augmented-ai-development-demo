@@ -17,6 +17,14 @@ export class BoardDsl {
         boardDriver.confirmShowsGridWithPositionsNumberedOneThroughNine()
     }
 
+    public confirmBoardStateDisplayed(): void {
+        boardDriver.confirmShowsGridWithPositionsNumberedOneThroughNine()
+    }
+
+    public confirmUpdatedBoardDisplayed(): void {
+        boardDriver.confirmShowsGridWithPositionsNumberedOneThroughNine()
+    }
+
     public confirmAllPositionsAreEmpty(): void {
         boardDriver.confirmAllPositionsAreEmpty()
     }

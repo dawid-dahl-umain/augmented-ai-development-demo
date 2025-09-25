@@ -61,6 +61,14 @@ export class BoardDriver {
         ])
     }
 
+    public confirmBoardStateDisplayed(): void {
+        this.confirmShowsGridWithPositionsNumberedOneThroughNine()
+    }
+
+    public confirmUpdatedBoardDisplayed(): void {
+        this.confirmShowsGridWithPositionsNumberedOneThroughNine()
+    }
+
     public confirmAllPositionsAreEmpty(): void {
         const rows = initialBoardRows()
         assertRowsContainOnlyNumbers(rows)
