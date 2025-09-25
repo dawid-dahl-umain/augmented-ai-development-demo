@@ -37,6 +37,7 @@ describe("CliRunner", () => {
         expect(
             outputs.some(line => line.includes("Invalid position: choose 1-9"))
         ).toBe(true)
+        expect(outputs.some(line => line.includes("X to move"))).toBe(true)
 
         spy.mockRestore()
     })

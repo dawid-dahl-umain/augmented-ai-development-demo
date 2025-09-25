@@ -69,13 +69,15 @@ export class CliRunner {
 
     public run(argv: ReadonlyArray<string>): number {
         const movesFlagIndex = argv.findIndex(a => a === "--moves")
-        const movesArg =
-            movesFlagIndex === -1 ? "" : argv[movesFlagIndex + 1] ?? ""
+        if (movesFlagIndex === -1) return 0
+
+        const movesArg = argv[movesFlagIndex + 1] ?? ""
         const verbose = !argv.includes("--no-verbose")
 
-        if (movesFlagIndex === -1 || movesArg.trim() === "") return 0
-
-        const moves = movesArg.split(",").map(s => Number(s.trim()))
+        const moves =
+            movesArg.trim() === ""
+                ? []
+                : movesArg.split(",").map(s => Number(s.trim()))
 
         const { presenter, getExitCode } = this.createPresenter(verbose)
         const adapter = new CliInputAdapter(presenter)

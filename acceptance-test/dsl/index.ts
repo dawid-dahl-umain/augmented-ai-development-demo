@@ -1,24 +1,21 @@
-import { game } from "./game"
-import { players, player } from "./players"
+import { BoardDsl } from "./board"
+import { GameDsl } from "./game"
+import { PlayerDsl } from "./player"
 
-export const dsl = {
-    game: {
-        ...game
-    },
-    board: {
-        confirmIsEmpty: (): void => {
-            game.confirmOutputContains("  1 | 2 | 3")
-            game.confirmOutputContains("  4 | 5 | 6")
-            game.confirmOutputContains("  7 | 8 | 9")
-        },
-        confirmAllPositionsAvailable: (): void => {
-            game.confirmOutputContains("  1 | 2 | 3")
-            game.confirmOutputContains("  4 | 5 | 6")
-            game.confirmOutputContains("  7 | 8 | 9")
-        }
-    },
-    player: {
-        ...player
-    },
-    players
+export const board = new BoardDsl()
+export const game = new GameDsl()
+export const player = new PlayerDsl()
+
+class Dsl {
+    public readonly board = board
+    public readonly game = game
+    public readonly player = player
+
+    public reset(): void {
+        this.board.reset()
+        this.game.reset()
+        this.player.reset()
+    }
 }
+
+export const dsl = new Dsl()
