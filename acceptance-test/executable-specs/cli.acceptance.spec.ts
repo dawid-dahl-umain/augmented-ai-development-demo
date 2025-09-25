@@ -1,6 +1,8 @@
 import { describe, it } from "vitest"
 import { dsl } from "../dsl"
 
+// Specification: specification-package/tictactoe-bdd-specification-package.md
+
 describe("Epic: Game Initialization", () => {
     describe("Feature: Start a new game", () => {
         it("should initialize empty board", async () => {
