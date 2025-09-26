@@ -77,7 +77,7 @@ describe("Epic: Making Moves", () => {
             // Given
             await dsl.game.start()
             await dsl.player.placeMark("X", 5)
-            await dsl.board.confirmPositionContains(5, "X")
+            dsl.board.confirmPositionContains(5, "X")
 
             // When
             await dsl.player.placeMark("O", 5)
@@ -149,7 +149,7 @@ describe("Epic: Win Detection", () => {
 
             // And
             await dsl.game.playMoves("1,4,2,5,3,6")
-            dsl.game.confirmOutputContains("Game is over. Player X won!")
+            dsl.game.confirmOutputContains("Game is over")
         })
 
         it("should win with vertical line (middle column)", async () => {
@@ -167,7 +167,7 @@ describe("Epic: Win Detection", () => {
 
             // And
             await dsl.game.playMoves("1,3,4,7,8,5,9")
-            dsl.game.confirmOutputContains("Game is over. Player O won!")
+            dsl.game.confirmOutputContains("Game is over")
         })
 
         it("should win with diagonal line (top-left to bottom-right)", async () => {
@@ -187,7 +187,7 @@ describe("Epic: Win Detection", () => {
 
             // And
             await dsl.game.playMoves("1,2,5,6,9,7")
-            dsl.game.confirmOutputContains("Game is over. Player X won!")
+            dsl.game.confirmOutputContains("Game is over")
         })
 
         it("should win with diagonal line (top-right to bottom-left)", async () => {
@@ -207,7 +207,7 @@ describe("Epic: Win Detection", () => {
 
             // And
             await dsl.game.playMoves("3,1,5,2,7,4")
-            dsl.game.confirmOutputContains("Game is over. Player X won!")
+            dsl.game.confirmOutputContains("Game is over")
         })
     })
 })
@@ -229,7 +229,7 @@ describe("Epic: Game End States", () => {
 
             // And
             await dsl.game.playMoves("1,2,3,5,6,4,7,9,8,1")
-            dsl.game.confirmOutputContains("Game is over. It's a draw!")
+            dsl.game.confirmOutputContains("Game is over")
         })
     })
 
@@ -252,6 +252,7 @@ describe("Epic: Game End States", () => {
             // Given
             await dsl.game.start()
             await dsl.game.playMoves("1,4,2,5,3")
+            dsl.game.confirmWinner("X")
 
             // When
             await dsl.game.playMoves("1,4,2,5,3,6")

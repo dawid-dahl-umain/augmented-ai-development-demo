@@ -239,15 +239,9 @@ Drivers own all technical interaction with the SUT.
 
 ```ts
 // drivers/order.driver.ts
-import { expect } from "vitest"
-
-type Cli = { run(args: ReadonlyArray<string>): Promise<{ stdout: string }> }
-
 export class OrderDriver {
     private lastResult: { stdout: string } | null = null
     private orders = new Set<string>()
-
-    public constructor(private readonly cli: Cli) {}
 
     public reset(): void {
         this.lastResult = null
@@ -255,21 +249,21 @@ export class OrderDriver {
     }
 
     public async create(id: string): Promise<void> {
-        await this.cli.run(["order", "create", id])
+        await cli.run(["order", "create", id])
         this.orders.add(id)
     }
 
     public async ship(id: string): Promise<void> {
-        this.lastResult = await this.cli.run(["order", "ship", id])
+        this.lastResult = await cli.run(["order", "ship", id])
     }
 
     public confirmShipped(id: string): void {
         if (!this.lastResult?.stdout.includes(`Order ${id} shipped`))
-            expect.fail(`Expected order ${id} to be shipped`)
+            throw new Error(`Expected order ${id} to be shipped`)
     }
 }
 
-export const orderDriver = new OrderDriver(cli)
+export const orderDriver = new OrderDriver()
 ```
 
 ### Driver Responsibilities
@@ -277,7 +271,7 @@ export const orderDriver = new OrderDriver(cli)
 -   Parse/format data for the SUT or external systems.
 -   Maintain any technical state required by the tests.
 -   Isolate unmanaged dependencies.
--   Emit clear failure messages when confirmations fail (raise explicit test failures rather than returning booleans).
+-   Emit clear failure messages when confirmations fail.
 
 ## Step 5 – Aggregate DSL Modules
 
