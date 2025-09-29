@@ -1,35 +1,39 @@
-import { boardDriver, gameDriver } from "../drivers"
+import type { BoardDriver } from "./board"
+import type { GameDriver } from "./game"
 
 type PlayerMarker = "X" | "O"
 
 export class PlayerDriver {
+    public constructor(
+        private readonly boardDriver: BoardDriver,
+        private readonly gameDriver: GameDriver
+    ) {}
+
     public reset(): void {
-        gameDriver.resetHistory()
+        this.gameDriver.resetHistory()
     }
 
     public confirmTurn(player: PlayerMarker): void {
-        gameDriver.confirmCurrentPlayerIs(player)
+        this.gameDriver.confirmCurrentPlayerIs(player)
     }
 
     public confirmPositionEmpty(position: number): void {
-        boardDriver.confirmPositionIsEmpty(position)
+        this.boardDriver.confirmPositionIsEmpty(position)
     }
 
     public async placeMark(
         player: PlayerMarker,
         position: number
     ): Promise<void> {
-        gameDriver.collectScenarioMove(position)
-        await gameDriver.playScenario()
+        this.gameDriver.collectScenarioMove(position)
+        await this.gameDriver.playScenario()
     }
 
     public confirmPositionHasMark(position: number, mark: PlayerMarker): void {
-        boardDriver.confirmPositionContains(position, mark)
+        this.boardDriver.confirmPositionContains(position, mark)
     }
 
     public confirmNextTurn(player: PlayerMarker): void {
-        gameDriver.confirmCurrentPlayerIs(player)
+        this.gameDriver.confirmCurrentPlayerIs(player)
     }
 }
-
-export const playerDriver = new PlayerDriver()

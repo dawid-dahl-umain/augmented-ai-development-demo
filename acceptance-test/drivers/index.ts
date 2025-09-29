@@ -1,5 +1,2 @@
 export { cliDriver } from "./cli"
-export { gameDriver } from "./game"
-export { boardDriver } from "./board"
-export { playerDriver } from "./player"
 export type { CliResult } from "./cli"

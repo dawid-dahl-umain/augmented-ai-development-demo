@@ -1,21 +1,22 @@
+import { GameDriver } from "../drivers/game"
+import { BoardDriver } from "../drivers/board"
+import { PlayerDriver } from "../drivers/player"
 import { BoardDsl } from "./board"
 import { GameDsl } from "./game"
 import { PlayerDsl } from "./player"
+import { DslContext } from "./utils/context"
 
-export const board = new BoardDsl()
-export const game = new GameDsl()
-export const player = new PlayerDsl()
+export const createDsl = () => {
+    const context = new DslContext()
+    const gameDriver = new GameDriver()
+    const boardDriver = new BoardDriver(gameDriver)
+    const playerDriver = new PlayerDriver(boardDriver, gameDriver)
 
-class Dsl {
-    public readonly board = board
-    public readonly game = game
-    public readonly player = player
-
-    public reset(): void {
-        this.board.reset()
-        this.game.reset()
-        this.player.reset()
+    return {
+        board: new BoardDsl(context, boardDriver),
+        game: new GameDsl(context, gameDriver, boardDriver),
+        player: new PlayerDsl(context, boardDriver, gameDriver, playerDriver)
     }
 }
 
-export const dsl = new Dsl()
+export type Dsl = ReturnType<typeof createDsl>

@@ -1,49 +1,45 @@
-import { boardDriver } from "../drivers"
-import { DslContext } from "./utils/context"
+import type { BoardDriver } from "../drivers/board"
+import type { DslContext } from "./utils/context"
 
 export class BoardDsl {
-    private readonly context = new DslContext()
-
-    public reset(): void {
-        this.context.reset()
-        // board driver is stateless; no reset needed
-    }
+    public constructor(
+        private readonly _context: DslContext,
+        private readonly driver: BoardDriver
+    ) {}
 
     public async viewBoard(): Promise<void> {
-        await boardDriver.viewBoard()
+        await this.driver.viewBoard()
     }
 
     public confirmShowsGridWithPositionsNumberedOneThroughNine(): void {
-        boardDriver.confirmShowsGridWithPositionsNumberedOneThroughNine()
+        this.driver.confirmShowsGridWithPositionsNumberedOneThroughNine()
     }
 
     public confirmBoardStateDisplayed(): void {
-        boardDriver.confirmShowsGridWithPositionsNumberedOneThroughNine()
+        this.driver.confirmShowsGridWithPositionsNumberedOneThroughNine()
     }
 
     public confirmUpdatedBoardDisplayed(): void {
-        boardDriver.confirmShowsGridWithPositionsNumberedOneThroughNine()
+        this.driver.confirmShowsGridWithPositionsNumberedOneThroughNine()
     }
 
     public confirmAllPositionsAreEmpty(): void {
-        boardDriver.confirmAllPositionsAreEmpty()
+        this.driver.confirmAllPositionsAreEmpty()
     }
 
     public confirmIsEmpty(): void {
-        boardDriver.confirmIsEmpty()
+        this.driver.confirmIsEmpty()
     }
 
     public confirmAllPositionsAvailable(): void {
-        boardDriver.confirmAllPositionsAvailable()
+        this.driver.confirmAllPositionsAvailable()
     }
 
     public confirmPositionIsEmpty(position: number): void {
-        boardDriver.confirmPositionIsEmpty(position)
+        this.driver.confirmPositionIsEmpty(position)
     }
 
     public confirmPositionContains(position: number, mark: "X" | "O"): void {
-        boardDriver.confirmPositionContains(position, mark)
+        this.driver.confirmPositionContains(position, mark)
     }
 }
-
-export const board = new BoardDsl()

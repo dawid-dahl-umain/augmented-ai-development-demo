@@ -1,7 +1,13 @@
-import { describe, it } from "vitest"
-import { dsl } from "../dsl"
+import { beforeEach, describe, it } from "vitest"
+import { createDsl, type Dsl } from "../dsl"
 
 // Specification: specification-package/tictactoe-bdd-specification-package.md
+
+let dsl: Dsl
+
+beforeEach(() => {
+    dsl = createDsl()
+})
 
 describe("Epic: Game Initialization", () => {
     describe("Feature: Start a new game", () => {

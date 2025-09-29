@@ -1,11 +1,3 @@
-import { DslContext } from "./utils/context"
-
 export class PlayersDsl {
-    private readonly context = new DslContext()
-
-    public reset(): void {
-        this.context.reset()
-    }
+    // Placeholder for future multi-player DSL functionality.
 }
-
-export const players = new PlayersDsl()

@@ -1,24 +1,25 @@
-import { boardDriver, gameDriver, type CliResult } from "../drivers"
-import { DslContext } from "./utils/context"
+import type { DslContext } from "./utils/context"
+import type { GameDriver } from "../drivers/game"
+import type { BoardDriver } from "../drivers/board"
+import type { CliResult } from "../drivers"
 
 export class GameDsl {
-    private readonly context = new DslContext()
-
-    public reset(): void {
-        this.context.reset()
-        void gameDriver.noGameInProgress()
-    }
+    public constructor(
+        private readonly _context: DslContext,
+        private readonly gameDriver: GameDriver,
+        private readonly boardDriver: BoardDriver
+    ) {}
 
     // Given
     public async noGameInProgress(): Promise<void> {
-        await gameDriver.noGameInProgress()
+        await this.gameDriver.noGameInProgress()
     }
 
     /**
      * Runs the CLI from a clean state and records the resulting transcript.
      */
     public async start(): Promise<void> {
-        await gameDriver.start()
+        await this.gameDriver.start()
     }
 
     /**
@@ -26,12 +27,12 @@ export class GameDsl {
      * Useful for arranging the board before triggering a DSL action.
      */
     public addMove(position: number): void {
-        gameDriver.collectScenarioMove(position)
+        this.gameDriver.collectScenarioMove(position)
     }
 
     // When
     public async startNewGame(): Promise<void> {
-        await gameDriver.startNewGame()
+        await this.gameDriver.startNewGame()
     }
 
     /**
@@ -39,7 +40,7 @@ export class GameDsl {
      * Accepts a numeric array for readability in tests.
      */
     public async applyMoves(moves: ReadonlyArray<number>): Promise<void> {
-        await gameDriver.applyMoves(moves)
+        await this.gameDriver.applyMoves(moves)
     }
 
     /**
@@ -47,11 +48,11 @@ export class GameDsl {
      * Use when the scenario describes a full sequence of moves.
      */
     public async playMoves(movesCsv: string): Promise<CliResult> {
-        return gameDriver.playMovesCsv(movesCsv)
+        return this.gameDriver.playMovesCsv(movesCsv)
     }
 
     public async playScenario(): Promise<CliResult> {
-        return gameDriver.playScenario()
+        return this.gameDriver.playScenario()
     }
 
     /**
@@ -59,62 +60,60 @@ export class GameDsl {
      * simulating a player entering a non-numeric or otherwise invalid value.
      */
     public async enterInvalidInput(value: string): Promise<void> {
-        await gameDriver.enterInvalidInput(value)
+        await this.gameDriver.enterInvalidInput(value)
     }
 
     /**
      * Verifies the most recent CLI result produced a winner.
      */
     public confirmWinner(expected: "X" | "O"): void {
-        gameDriver.confirmWinnerIs(expected)
+        this.gameDriver.confirmWinnerIs(expected)
     }
 
     /**
      * Confirms the latest CLI run rejected a move (non-zero exit code).
      */
     public confirmMoveRejected(): void {
-        gameDriver.confirmMoveRejected()
+        this.gameDriver.confirmMoveRejected()
     }
 
     /**
      * Ensures the CLI transcript advanced to the next player after a move.
      */
     public confirmMoveCompleted(): void {
-        gameDriver.confirmMoveCompleted()
+        this.gameDriver.confirmMoveCompleted()
     }
 
     // Then – confirmations
     public confirmDraw(): void {
-        gameDriver.confirmDraw()
+        this.gameDriver.confirmDraw()
     }
 
     public confirmShowsInvalidPosition(): void {
-        gameDriver.confirmShowsInvalidPosition()
+        this.gameDriver.confirmShowsInvalidPosition()
     }
 
     public confirmShowsInvalidInput(): void {
-        gameDriver.confirmShowsInvalidInput()
+        this.gameDriver.confirmShowsInvalidInput()
     }
 
     public confirmShowsPositionTakenAt(position: number): void {
-        gameDriver.confirmShowsPositionTakenAt(position)
+        this.gameDriver.confirmShowsPositionTakenAt(position)
     }
 
     public confirmOutputContains(text: string): void {
-        gameDriver.confirmOutputContains(text)
+        this.gameDriver.confirmOutputContains(text)
     }
 
     public confirmExitCode(expected: number): void {
-        gameDriver.confirmExitCode(expected)
+        this.gameDriver.confirmExitCode(expected)
     }
 
     public getLastResult(): CliResult {
-        return gameDriver.getLastResult()
+        return this.gameDriver.getLastResult()
     }
 
     public confirmBoardIsEmpty(): void {
-        boardDriver.confirmIsEmpty()
+        this.boardDriver.confirmIsEmpty()
     }
 }
-
-export const game = new GameDsl()

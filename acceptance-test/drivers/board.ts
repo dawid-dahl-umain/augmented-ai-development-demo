@@ -1,5 +1,5 @@
 import { expect } from "vitest"
-import { gameDriver } from "./game"
+import type { GameDriver } from "./game"
 
 const assertRowsMatch = (
     rows: ReadonlyArray<string>,
@@ -19,11 +19,6 @@ const assertRowsContainOnlyNumbers = (rows: ReadonlyArray<string>): void => {
     if (rows.some(row => /[XO]/.test(row)))
         expect.fail("Expected board rows to be empty but found player marks")
 }
-
-const initialBoardRows = (): ReadonlyArray<string> =>
-    gameDriver.extractInitialBoardRows()
-const latestBoardRows = (): ReadonlyArray<string> =>
-    gameDriver.extractLatestBoardRows()
 
 const getCellValue = (
     rows: ReadonlyArray<string>,
@@ -46,12 +41,14 @@ const getCellValue = (
 }
 
 export class BoardDriver {
+    public constructor(private readonly gameDriver: GameDriver) {}
+
     public async viewBoard(): Promise<void> {
         // Viewing is implicit; no additional CLI action required.
     }
 
     public confirmShowsGridWithPositionsNumberedOneThroughNine(): void {
-        const rows = initialBoardRows()
+        const rows = this.initialBoardRows()
         assertRowsMatch(rows, [
             "  1 | 2 | 3",
             " ---+---+---",
@@ -70,7 +67,7 @@ export class BoardDriver {
     }
 
     public confirmAllPositionsAreEmpty(): void {
-        const rows = initialBoardRows()
+        const rows = this.initialBoardRows()
         assertRowsContainOnlyNumbers(rows)
     }
 
@@ -84,16 +81,20 @@ export class BoardDriver {
     }
 
     public confirmPositionIsEmpty(position: number): void {
-        const value = getCellValue(initialBoardRows(), position)
+        const value = getCellValue(this.initialBoardRows(), position)
         if (value === "X" || value === "O")
             expect.fail(`Expected position ${position} to be empty`)
     }
 
     public confirmPositionContains(position: number, mark: "X" | "O"): void {
-        const value = getCellValue(latestBoardRows(), position)
+        const value = getCellValue(this.latestBoardRows(), position)
         if (value !== mark)
             expect.fail(`Expected position ${position} to contain ${mark}`)
     }
-}
 
-export const boardDriver = new BoardDriver()
+    private initialBoardRows = (): ReadonlyArray<string> =>
+        this.gameDriver.extractInitialBoardRows()
+
+    private latestBoardRows = (): ReadonlyArray<string> =>
+        this.gameDriver.extractLatestBoardRows()
+}
