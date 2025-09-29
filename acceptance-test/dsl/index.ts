@@ -8,6 +8,7 @@ import { DslContext } from "./utils/context"
 
 export const createDsl = () => {
     const context = new DslContext()
+
     const gameDriver = new GameDriver()
     const boardDriver = new BoardDriver(gameDriver)
     const playerDriver = new PlayerDriver(boardDriver, gameDriver)

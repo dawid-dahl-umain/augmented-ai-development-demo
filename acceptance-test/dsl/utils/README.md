@@ -24,6 +24,7 @@ import { DslContext } from "./src/dsl/context/DslContext"
 import { Params } from "./src/dsl/params/Params"
 
 const context = new DslContext()
+
 const params = new Params(context, {
     name: "ResourceName",
     tags: ["tag-a", "tag-b"],
