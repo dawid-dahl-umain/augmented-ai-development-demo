@@ -1,38 +1,41 @@
-import type { BoardDriver } from "../drivers/board"
 import type { DslContext } from "./utils/context"
+import type { CliDriver } from "../drivers/cli-driver"
 
 export class BoardDsl {
     public constructor(
-        private readonly _context: DslContext,
-        private readonly driver: BoardDriver
+        private readonly context: DslContext,
+        private readonly driver: CliDriver
     ) {}
 
     public async viewBoard(): Promise<void> {
-        await this.driver.viewBoard()
+        // Viewing is implicit in CLI output
     }
 
     public confirmShowsGridWithPositionsNumberedOneThroughNine(): void {
-        this.driver.confirmShowsGridWithPositionsNumberedOneThroughNine()
+        this.driver.confirmBoardDisplayed()
     }
 
     public confirmBoardStateDisplayed(): void {
-        this.driver.confirmShowsGridWithPositionsNumberedOneThroughNine()
+        this.confirmShowsGridWithPositionsNumberedOneThroughNine()
     }
 
     public confirmUpdatedBoardDisplayed(): void {
-        this.driver.confirmShowsGridWithPositionsNumberedOneThroughNine()
+        this.confirmShowsGridWithPositionsNumberedOneThroughNine()
     }
 
     public confirmAllPositionsAreEmpty(): void {
-        this.driver.confirmAllPositionsAreEmpty()
+        for (let position = 1; position <= 9; position++) {
+            this.driver.confirmPositionIsEmpty(position)
+        }
     }
 
     public confirmIsEmpty(): void {
-        this.driver.confirmIsEmpty()
+        this.driver.confirmBoardDisplayed()
+        this.driver.confirmAllPositionsAreEmpty()
     }
 
     public confirmAllPositionsAvailable(): void {
-        this.driver.confirmAllPositionsAvailable()
+        this.confirmAllPositionsAreEmpty()
     }
 
     public confirmPositionIsEmpty(position: number): void {

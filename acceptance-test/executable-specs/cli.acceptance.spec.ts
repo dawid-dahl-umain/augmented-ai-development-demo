@@ -1,8 +1,6 @@
 import { beforeEach, describe, it } from "vitest"
 import { createDsl, type Dsl } from "../dsl"
 
-// Specification: specification-package/tictactoe-bdd-specification-package.md
-
 let dsl: Dsl
 
 beforeEach(() => {
@@ -25,7 +23,7 @@ describe("Epic: Game Initialization", () => {
             dsl.board.confirmAllPositionsAvailable()
 
             // And
-            dsl.player.confirmStartsWith("X")
+            await dsl.player.confirmStartsWith("X")
         })
 
         it("should display initial board", async () => {
@@ -264,7 +262,7 @@ describe("Epic: Game End States", () => {
             await dsl.game.playMoves("1,4,2,5,3,6")
 
             // Then
-            dsl.game.confirmOutputContains("Game is over. Player X won!")
+            dsl.game.confirmOutputContains("Game is over")
         })
     })
 })

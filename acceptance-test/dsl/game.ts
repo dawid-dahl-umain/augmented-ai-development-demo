@@ -1,119 +1,93 @@
 import type { DslContext } from "./utils/context"
-import type { GameDriver } from "../drivers/game"
-import type { BoardDriver } from "../drivers/board"
+import type { CliDriver } from "../drivers/cli-driver"
 import type { CliResult } from "../drivers"
 
 export class GameDsl {
     public constructor(
-        private readonly _context: DslContext,
-        private readonly gameDriver: GameDriver,
-        private readonly boardDriver: BoardDriver
+        private readonly context: DslContext,
+        private readonly driver: CliDriver
     ) {}
 
-    // Given
     public async noGameInProgress(): Promise<void> {
-        await this.gameDriver.noGameInProgress()
+        this.driver.clearMoves()
     }
 
-    /**
-     * Runs the CLI from a clean state and records the resulting transcript.
-     */
     public async start(): Promise<void> {
-        await this.gameDriver.start()
+        this.driver.clearMoves()
+        await this.driver.executeMoves([])
     }
 
-    /**
-     * Adds a move to the staged history without executing the CLI.
-     * Useful for arranging the board before triggering a DSL action.
-     */
-    public addMove(position: number): void {
-        this.gameDriver.collectScenarioMove(position)
-    }
-
-    // When
     public async startNewGame(): Promise<void> {
-        await this.gameDriver.startNewGame()
+        await this.start()
     }
 
-    /**
-     * Replays the provided move history and stores the latest CLI result.
-     * Accepts a numeric array for readability in tests.
-     */
+    public addMove(position: number): void {
+        this.driver.addMove(String(position))
+    }
+
     public async applyMoves(moves: ReadonlyArray<number>): Promise<void> {
-        await this.gameDriver.applyMoves(moves)
+        this.driver.setMoveHistory(moves.map(String))
+        await this.driver.executeAccumulatedMoves()
     }
 
-    /**
-     * Runs the CLI with the exact CSV string provided and returns the result.
-     * Use when the scenario describes a full sequence of moves.
-     */
-    public async playMoves(movesCsv: string): Promise<CliResult> {
-        return this.gameDriver.playMovesCsv(movesCsv)
+    public async playMoves(movesCsv: string): Promise<void> {
+        const moves =
+            movesCsv.trim() === "" ? [] : movesCsv.split(",").map(m => m.trim())
+        this.driver.setMoveHistory(moves)
+        await this.driver.executeAccumulatedMoves()
     }
 
-    public async playScenario(): Promise<CliResult> {
-        return this.gameDriver.playScenario()
+    public async playScenario(): Promise<void> {
+        await this.driver.executeAccumulatedMoves()
     }
 
-    /**
-     * Appends the raw input to the move history and executes the CLI,
-     * simulating a player entering a non-numeric or otherwise invalid value.
-     */
     public async enterInvalidInput(value: string): Promise<void> {
-        await this.gameDriver.enterInvalidInput(value)
+        this.driver.addMove(value)
+        await this.driver.executeAccumulatedMoves()
     }
 
-    /**
-     * Verifies the most recent CLI result produced a winner.
-     */
     public confirmWinner(expected: "X" | "O"): void {
-        this.gameDriver.confirmWinnerIs(expected)
+        this.driver.confirmWinner(expected)
     }
 
-    /**
-     * Confirms the latest CLI run rejected a move (non-zero exit code).
-     */
-    public confirmMoveRejected(): void {
-        this.gameDriver.confirmMoveRejected()
-    }
-
-    /**
-     * Ensures the CLI transcript advanced to the next player after a move.
-     */
-    public confirmMoveCompleted(): void {
-        this.gameDriver.confirmMoveCompleted()
-    }
-
-    // Then – confirmations
     public confirmDraw(): void {
-        this.gameDriver.confirmDraw()
+        this.driver.confirmDraw()
+    }
+
+    public confirmMoveRejected(): void {
+        this.driver.confirmMoveRejected()
+    }
+
+    public confirmMoveCompleted(): void {
+        this.driver.confirmMoveCompleted()
     }
 
     public confirmShowsInvalidPosition(): void {
-        this.gameDriver.confirmShowsInvalidPosition()
+        this.driver.confirmTextInOutput("Invalid position: choose 1-9")
     }
 
     public confirmShowsInvalidInput(): void {
-        this.gameDriver.confirmShowsInvalidInput()
+        this.driver.confirmTextInOutput("Invalid input: enter a number 1-9")
     }
 
     public confirmShowsPositionTakenAt(position: number): void {
-        this.gameDriver.confirmShowsPositionTakenAt(position)
+        this.driver.confirmTextInOutput(`Position already taken at ${position}`)
     }
 
     public confirmOutputContains(text: string): void {
-        this.gameDriver.confirmOutputContains(text)
+        this.driver.confirmTextInOutput(text)
     }
 
     public confirmExitCode(expected: number): void {
-        this.gameDriver.confirmExitCode(expected)
-    }
-
-    public getLastResult(): CliResult {
-        return this.gameDriver.getLastResult()
+        this.driver.confirmExitCode(expected)
     }
 
     public confirmBoardIsEmpty(): void {
-        this.boardDriver.confirmIsEmpty()
+        this.driver.confirmBoardDisplayed()
+        this.driver.confirmAllPositionsAreEmpty()
+    }
+
+    public getLastResult(): CliResult {
+        return this.driver.getLastResult()
     }
 }
