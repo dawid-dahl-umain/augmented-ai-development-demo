@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest"
-import { createDsl, type Dsl } from "../dsl"
+import { createDsl, type Dsl } from "../../dsl"
 
 // Imaginary Spec Package: Player Handle Isolation
 //
