@@ -102,9 +102,11 @@ Player X wins!
 ```
 aaid-demo/
   acceptance-test/
-    drivers/                 # runs compiled CLI (build-once per test run)
+    protocol-driver/         # runs compiled CLI (build-once per test run)
     dsl/                     # Given/When/Then helpers
+      utils/                 # DslContext & Params for test isolation
     executable-specs/        # end-to-end acceptance tests
+  acceptance-test-isolation-demo/   # Demo of isolation utilities
   specification-package/
     tictactoe-specs.md       # user stories + bdd scenarios
   src/
@@ -126,3 +128,8 @@ aaid-demo/
     -   output: driven adapter. Implements Presenter: templates → text; no state/policy.
     -   Domain remains UI-agnostic and free of I/O.
 -   Acceptance tests execute the built CLI to validate real behavior.
+
+## Learning Resources
+
+-   **Acceptance Test Isolation Demo**: [`acceptance-test-isolation-demo/`](./acceptance-test-isolation-demo/) - Shows how to use `.alias()`, `.optional()`, and `.optionalSequence()` in the DSL layer
+-   **Acceptance Test Isolation Utilities**: [`acceptance-test/dsl/utils/`](./acceptance-test/dsl/utils/) - `DslContext` and `Params` implementations with tests and documentation

@@ -1,10 +1,10 @@
 import { beforeEach, describe, it } from "vitest"
-import { createDsl, type Dsl } from "../dsl"
+import { Dsl } from "../dsl"
 
 let dsl: Dsl
 
 beforeEach(() => {
-    dsl = createDsl()
+    dsl = new Dsl()
 })
 
 describe("Epic: Game Initialization", () => {
@@ -31,7 +31,7 @@ describe("Epic: Game Initialization", () => {
             await dsl.game.startNewGame()
 
             // When
-            await dsl.board.viewBoard()
+            dsl.board.viewBoard()
 
             // Then
             dsl.board.confirmShowsGridWithPositionsNumberedOneThroughNine()

@@ -1,6 +1,6 @@
 import type { DslContext } from "./utils/context"
-import type { CliDriver } from "../drivers/cli-driver"
-import type { CliResult } from "../drivers"
+import type { CliDriver } from "../protocol-driver/cli-driver"
+import type { CliResult } from "../protocol-driver"
 
 export class GameDsl {
     public constructor(

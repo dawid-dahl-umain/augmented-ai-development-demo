@@ -1,6 +1,6 @@
 import { DslContext } from "./utils/context"
 import { Params, ParamsArgs } from "./utils/params"
-import type { CliDriver } from "../drivers/cli-driver"
+import type { CliDriver } from "../protocol-driver/cli-driver"
 
 export class PlayerDsl {
     public constructor(

@@ -18,6 +18,6 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true
     },
-    "include": ["src", "acceptance-test"],
+    "include": ["src", "acceptance-test", "acceptance-test-isolation-demo"],
     "exclude": ["node_modules", "dist"]
 }

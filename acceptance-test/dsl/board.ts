@@ -1,5 +1,5 @@
 import type { DslContext } from "./utils/context"
-import type { CliDriver } from "../drivers/cli-driver"
+import type { CliDriver } from "../protocol-driver/cli-driver"
 
 export class BoardDsl {
     public constructor(
@@ -7,7 +7,7 @@ export class BoardDsl {
         private readonly driver: CliDriver
     ) {}
 
-    public async viewBoard(): Promise<void> {
+    public viewBoard(): void {
         // Viewing is implicit in CLI output
     }
 
