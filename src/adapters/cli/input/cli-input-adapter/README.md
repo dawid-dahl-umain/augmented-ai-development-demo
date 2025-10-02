@@ -11,11 +11,11 @@ Purpose: Parse CLI lines (e.g., `start`, `move 5`, `help`, `quit`), call the Tic
 
 ## Contract
 
--   Depends on `Presenter` port: `src/adapters/ports/presenter.ts`
+-   Depends on `Presenter` port: `src/domain/tic-tac-toe/ports.ts`
 -   Implements `CliInputAdapter` in `src/adapters/cli/input/cli-input-adapter.ts`
 
 ```ts
-import type { Presenter } from "@/adapters/ports/presenter"
+import type { Presenter } from "@/domain/tic-tac-toe/ports"
 import { CliInputAdapter } from "./cli-input-adapter"
 
 const presenter: Presenter = {

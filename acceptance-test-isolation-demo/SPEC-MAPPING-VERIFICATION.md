@@ -477,7 +477,7 @@ it("should have separate todo lists for different users", () => {
 
 ### ✅ Perfect 1:1 Mapping Achieved
 
-**All 8 Scenarios Mapped:**
+**All 9 Scenarios Mapped:**
 
 1. ✅ Create user
 2. ✅ Create todo with title only

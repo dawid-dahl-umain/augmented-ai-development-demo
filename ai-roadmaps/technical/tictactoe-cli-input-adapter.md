@@ -50,7 +50,7 @@ Input Adapter
 
 ## Dependencies
 
--   **Depends on**: Domain API in `src/game.ts` (`TicTacToe`, `GameState`)
+-   **Depends on**: Domain API in `src/domain/tic-tac-toe/game.ts` (`TicTacToe`, `GameState`)
 -   **Blocks**: CLI renderer/output adapter (to format and print to terminal)
 
 ## Notes

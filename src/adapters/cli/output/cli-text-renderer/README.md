@@ -25,7 +25,7 @@ type Renderer = { render: (view: ViewModel) => void }
 Presenter adapter (configurable mapping):
 
 ```ts
-import type { Presenter } from "@/adapters/ports/presenter"
+import type { Presenter } from "@/domain/tic-tac-toe/ports"
 
 type ViewModel = { type: string; payload?: unknown }
 type Renderer = { render: (view: ViewModel) => void }
@@ -64,7 +64,7 @@ export const tictactoeMap: PresenterMap = {
 
 ## Tests
 
--   See `src/adapters/cli/output/cli-text-renderer.spec.ts` (currently RED/skip-list under AAID TDD)
+-   See `src/adapters/cli/output/cli-text-renderer/cli-text-renderer.spec.ts`
 
 ## Roadmap
 

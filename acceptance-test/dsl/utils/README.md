@@ -8,7 +8,7 @@ Acceptance testing utilities for functional and temporal isolation in TypeScript
 
 -   `Params` maps DSL arguments (plain objects whose values are strings or string arrays) to named values.
 -   `DslContext` keeps per-test sequences and global alias maps so test runs never clash.
--   Everything lives under `src/dsl/` and is exercised via Vitest.
+-   Everything lives under `acceptance-test/dsl/utils/` and is exercised via Vitest or similar test.
 
 ## Getting Started
 
@@ -20,8 +20,8 @@ npm run test
 ## Usage
 
 ```ts
-import { DslContext } from "./src/dsl/context/DslContext"
-import { Params } from "./src/dsl/params/Params"
+import { DslContext } from "./context/dsl-context"
+import { Params } from "./params/params"
 
 const context = new DslContext()
 
