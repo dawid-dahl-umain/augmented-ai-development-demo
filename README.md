@@ -105,8 +105,8 @@ Scenario: Valid move on empty cell
 it("should accept a valid move on an empty cell", async () => {
     // Given
     await dsl.game.start()
-    await dsl.player.confirmTurn("X")
-    dsl.board.confirmPositionIsEmpty(5)
+    await dsl.player.isTurn("X")
+    dsl.board.isPositionEmpty(5)
 
     // When
     await dsl.player.placeMark("X", 5)

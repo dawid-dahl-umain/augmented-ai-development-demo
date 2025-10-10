@@ -47,10 +47,10 @@ describe("Epic: Making Moves", () => {
         it("should accept a valid move on an empty cell", async () => {
             // Given
             await dsl.game.start()
-            await dsl.player.confirmTurn("X")
+            await dsl.player.isTurn("X")
 
             // And
-            dsl.board.confirmPositionIsEmpty(5)
+            dsl.board.isPositionEmpty(5)
 
             // When
             await dsl.player.placeMark("X", 5)
@@ -93,13 +93,13 @@ describe("Epic: Making Moves", () => {
             dsl.game.confirmOutputContains("Position already taken at 5")
 
             // And
-            await dsl.player.confirmTurn("O")
+            await dsl.player.isTurn("O")
         })
 
         it("should not place mark outside board", async () => {
             // Given
             await dsl.game.start()
-            await dsl.player.confirmTurn("X")
+            await dsl.player.isTurn("X")
 
             // When
             await dsl.player.placeMark("X", 10)
@@ -111,13 +111,13 @@ describe("Epic: Making Moves", () => {
             dsl.game.confirmShowsInvalidPosition()
 
             // And
-            await dsl.player.confirmTurn("X")
+            await dsl.player.isTurn("X")
         })
 
         it("should not place mark with invalid input", async () => {
             // Given
             await dsl.game.start()
-            await dsl.player.confirmTurn("X")
+            await dsl.player.isTurn("X")
 
             // When
             await dsl.game.enterInvalidInput("abc")
@@ -129,7 +129,7 @@ describe("Epic: Making Moves", () => {
             dsl.game.confirmShowsInvalidInput()
 
             // And
-            await dsl.player.confirmTurn("X")
+            await dsl.player.isTurn("X")
         })
     })
 })
@@ -140,7 +140,7 @@ describe("Epic: Win Detection", () => {
             // Given
             await dsl.game.start()
             await dsl.game.applyMoves([1, 4, 2, 5])
-            await dsl.player.confirmTurn("X")
+            await dsl.player.isTurn("X")
 
             // When
             await dsl.player.placeMark("X", 3)
@@ -178,7 +178,7 @@ describe("Epic: Win Detection", () => {
             // Given
             await dsl.game.start()
             await dsl.game.applyMoves([1, 2, 5, 6])
-            await dsl.player.confirmTurn("X")
+            await dsl.player.isTurn("X")
 
             // When
             await dsl.player.placeMark("X", 9)
@@ -198,7 +198,7 @@ describe("Epic: Win Detection", () => {
             // Given
             await dsl.game.start()
             await dsl.game.applyMoves([3, 1, 5, 2])
-            await dsl.player.confirmTurn("X")
+            await dsl.player.isTurn("X")
 
             // When
             await dsl.player.placeMark("X", 7)

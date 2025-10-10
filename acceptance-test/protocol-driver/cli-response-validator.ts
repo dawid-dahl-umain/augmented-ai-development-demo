@@ -20,7 +20,7 @@ export class CliResponseValidator {
         }
     }
 
-    public confirmPositionIsEmpty(stdout: string, position: number): void {
+    public isPositionEmpty(stdout: string, position: number): void {
         try {
             const rows = this.parser.extractBoardRows(stdout, "initial")
             const value = this.parser.getCellValue(rows, position)

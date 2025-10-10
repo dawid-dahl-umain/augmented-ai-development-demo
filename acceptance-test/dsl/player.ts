@@ -12,12 +12,12 @@ export class PlayerDsl {
         this.driver.confirmInitialPlayer(id)
     }
 
-    public async confirmTurn(id: "X" | "O"): Promise<void> {
+    public async isTurn(id: "X" | "O"): Promise<void> {
         this.driver.confirmCurrentPlayer(id)
     }
 
     public async confirmPositionEmpty(position: number): Promise<void> {
-        this.driver.confirmPositionIsEmpty(position)
+        this.driver.isPositionEmpty(position)
     }
 
     public async placeMark(_id: "X" | "O", position: number): Promise<void> {

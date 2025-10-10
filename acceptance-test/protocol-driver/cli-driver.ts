@@ -60,11 +60,8 @@ export class CliDriver {
         )
     }
 
-    public confirmPositionIsEmpty(position: number): void {
-        this.validator.confirmPositionIsEmpty(
-            this.ensureResult().stdout,
-            position
-        )
+    public isPositionEmpty(position: number): void {
+        this.validator.isPositionEmpty(this.ensureResult().stdout, position)
     }
 
     public confirmCurrentPlayer(player: "X" | "O"): void {

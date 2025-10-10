@@ -25,7 +25,7 @@ export class BoardDsl {
 
     public confirmAllPositionsAreEmpty(): void {
         for (let position = 1; position <= 9; position++) {
-            this.driver.confirmPositionIsEmpty(position)
+            this.driver.isPositionEmpty(position)
         }
     }
 
@@ -38,8 +38,8 @@ export class BoardDsl {
         this.confirmAllPositionsAreEmpty()
     }
 
-    public confirmPositionIsEmpty(position: number): void {
-        this.driver.confirmPositionIsEmpty(position)
+    public isPositionEmpty(position: number): void {
+        this.driver.isPositionEmpty(position)
     }
 
     public confirmPositionContains(position: number, mark: "X" | "O"): void {
