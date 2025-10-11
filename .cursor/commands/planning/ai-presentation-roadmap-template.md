@@ -220,7 +220,7 @@ Hidden --> [*]
 3. Multiple toasts stack correctly
 4. Auto-dismisses after 4 seconds with fade-out
 5. Progress bar indicates time remaining
-6. Dismiss button remains easily clickable/tappable
+6. Dismiss button remains easily clickable/tapable
 7. Screen reader announces immediately with role="alert"
 8. Respects prefers-reduced-motion settings
 9. Z-index keeps toast above all content

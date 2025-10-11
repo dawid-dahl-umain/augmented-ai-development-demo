@@ -4,10 +4,10 @@ Purpose: Format domain-agnostic view models into plain text using injected templ
 
 ## Responsibilities
 
--   Accept view models from a presenter adapter
--   Select and execute a template per `view.type`
--   Write formatted text to an injected writer
--   Provide sane fallback for unknown types
+- Accept view models from a presenter adapter
+- Select and execute a template per `view.type`
+- Write formatted text to an injected writer
+- Provide sane fallback for unknown types
 
 ## Contract (planned)
 
@@ -64,11 +64,11 @@ export const tictactoeMap: PresenterMap = {
 
 ## Tests
 
--   See `src/adapters/cli/output/cli-text-renderer/cli-text-renderer.spec.ts`
+- See `src/adapters/cli/output/cli-text-renderer/cli-text-renderer.spec.ts`
 
 ## Roadmap
 
--   Technical roadmap: `ai-roadmaps/technical/cli-text-renderer-generic.md`
+- Technical roadmap: `ai-roadmaps/technical/cli-text-renderer-generic.md`
 
 ## Writer examples
 

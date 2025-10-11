@@ -10,12 +10,12 @@ Domain logic handles state transitions; a separate UI presents messages. Keep th
 
 ## Spec references
 
--   specification-package/tictactoe-bdd-specification-package.md
-    -   Epic 3: Player wins the game
-        -   Scenario: Win with horizontal line (top row)
-        -   Scenario: Win with vertical line (middle column)
-        -   Scenario: Win with diagonal line (top-left to bottom-right)
-        -   Scenario: Win with diagonal line (top-right to bottom-left)
+- specification-package/tictactoe-bdd-specification-package.md
+  - Epic 3: Player wins the game
+    - Scenario: Win with horizontal line (top row)
+    - Scenario: Win with vertical line (middle column)
+    - Scenario: Win with diagonal line (top-left to bottom-right)
+    - Scenario: Win with diagonal line (top-right to bottom-left)
 
 ## Test Scenario Sequence
 
@@ -27,15 +27,15 @@ Domain logic handles state transitions; a separate UI presents messages. Keep th
 
 ## Boundaries & Dependencies
 
--   **External Systems**: None for unit tests; UI is covered by separate integration tests
--   **Internal Patterns**: Immutable state transitions using pure functions
--   **Integration Points**: A UI renderer may display "Player X wins!"; domain exposes state only
+- **External Systems**: None for unit tests; UI is covered by separate integration tests
+- **Internal Patterns**: Immutable state transitions using pure functions
+- **Integration Points**: A UI renderer may display "Player X wins!"; domain exposes state only
 
 ## Non-Functional Requirements
 
--   Clear, concise winner message suitable for the chosen UI
+- Clear, concise winner message suitable for the chosen UI
 
 ## Notes
 
--   Prefer asserting via state (winner flag/player) and message substrings rather than full string equality
--   Strictly prevent additional moves once a winner exists; communicate game-over
+- Prefer asserting via state (winner flag/player) and message substrings rather than full string equality
+- Strictly prevent additional moves once a winner exists; communicate game-over

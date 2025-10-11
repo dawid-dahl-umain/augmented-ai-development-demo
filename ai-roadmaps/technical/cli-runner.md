@@ -14,15 +14,15 @@ No diagram needed – line input → adapter.handle(line) → presenter → rend
 
 ## Integration Points
 
--   **Connects to Domain**: Indirectly via `CliInputAdapter` → `Presenter` port → renderer templates
--   **External Dependencies**: Node `readline` on `process.stdin`/`process.stdout`
--   **Data Flow**: stdin line → adapter.parse/handle → presenter calls → renderer writes to stdout
+- **Connects to Domain**: Indirectly via `CliInputAdapter` → `Presenter` port → renderer templates
+- **External Dependencies**: Node `readline` on `process.stdin`/`process.stdout`
+- **Data Flow**: stdin line → adapter.parse/handle → presenter calls → renderer writes to stdout
 
 ## Spec References
 
--   `specification-package/tictactoe-bdd-specification-package.md` (user flow)
--   Existing adapter tests (`src/adapters/cli/input/cli-input-adapter/cli-input-adapter.spec.ts`)
--   Renderer tests (`src/adapters/cli/output/cli-text-renderer/cli-text-renderer.spec.ts`)
+- `specification-package/tictactoe-bdd-specification-package.md` (user flow)
+- Existing adapter tests (`src/adapters/cli/input/cli-input-adapter/cli-input-adapter.spec.ts`)
+- Renderer tests (`src/adapters/cli/output/cli-text-renderer/cli-text-renderer.spec.ts`)
 
 ## Test Sequence
 
@@ -38,22 +38,22 @@ No diagram needed – line input → adapter.handle(line) → presenter → rend
 
 **Primary approach**: Integration Tests
 
--   Replace real stdin/stdout with fakes (or pass an input iterator and a capture writer)
--   Use real `CliInputAdapter`, real renderer with simple templates
--   Assert ordered writes and termination behavior
+- Replace real stdin/stdout with fakes (or pass an input iterator and a capture writer)
+- Use real `CliInputAdapter`, real renderer with simple templates
+- Assert ordered writes and termination behavior
 
 ## Technical Constraints
 
--   **Performance**: N/A (interactive; per-line handling in milliseconds)
--   **Compatibility**: Node.js ESM
--   **Security**: Local-only IO; no sensitive data
+- **Performance**: N/A (interactive; per-line handling in milliseconds)
+- **Compatibility**: Node.js ESM
+- **Security**: Local-only IO; no sensitive data
 
 ## Dependencies
 
--   **Depends on**: `CliInputAdapter`, `createCliTextRenderer`, presenter mapping
--   **Enables**: End-to-end interactive gameplay from the terminal
+- **Depends on**: `CliInputAdapter`, `createCliTextRenderer`, presenter mapping
+- **Enables**: End-to-end interactive gameplay from the terminal
 
 ## Notes
 
--   Runner should be thin; expose a function `runCli(io)` to make TDD easy and keep `src/index.ts` as a trivial delegator.
--   Keep templates minimal in runner tests; detailed formatting is covered by renderer tests.
+- Runner should be thin; expose a function `runCli(io)` to make TDD easy and keep `src/index.ts` as a trivial delegator.
+- Keep templates minimal in runner tests; detailed formatting is covered by renderer tests.
