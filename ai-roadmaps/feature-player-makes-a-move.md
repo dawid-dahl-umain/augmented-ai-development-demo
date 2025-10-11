@@ -10,13 +10,13 @@ Pure domain functions update game state; any UI layer handles I/O. Domain remain
 
 ## Spec references
 
--   `specification-package/tictactoe-bdd-specification-package.md`
-    -   Epic 2: Player makes a move
-        -   Scenario: Valid move on empty cell
-        -   Scenario: Alternate turns between players
-        -   Scenario: Cannot place mark on occupied cell
-        -   Scenario: Cannot place mark outside board
-        -   Scenario: Cannot place mark with invalid input
+- `specification-package/tictactoe-bdd-specification-package.md`
+  - Epic 2: Player makes a move
+    - Scenario: Valid move on empty cell
+    - Scenario: Alternate turns between players
+    - Scenario: Cannot place mark on occupied cell
+    - Scenario: Cannot place mark outside board
+    - Scenario: Cannot place mark with invalid input
 
 ## Test Scenario Sequence
 
@@ -30,17 +30,17 @@ Pure domain functions update game state; any UI layer handles I/O. Domain remain
 
 ## Boundaries & Dependencies
 
--   **External Systems**: None for unit tests; UI concerns in separate integration tests
--   **Internal Patterns**: Pure functions, immutable state, arrow functions; follow existing style
--   **Integration Points**: A UI layer may orchestrate prompts/errors; domain tests remain pure
+- **External Systems**: None for unit tests; UI concerns in separate integration tests
+- **Internal Patterns**: Pure functions, immutable state, arrow functions; follow existing style
+- **Integration Points**: A UI layer may orchestrate prompts/errors; domain tests remain pure
 
 ## Non-Functional Requirements
 
--   Clear, actionable error messages per spec
+- Clear, actionable error messages per spec
 
 ## Notes
 
--   Tests use only Given/When/Then comments, no loops/conditionals
--   Keep domain logic free of I/O; return results and errors explicitly
--   Maintain available positions consistently with board updates
--   Do not prescribe specific data structures or function names in tests
+- Tests use only Given/When/Then comments, no loops/conditionals
+- Keep domain logic free of I/O; return results and errors explicitly
+- Maintain available positions consistently with board updates
+- Do not prescribe specific data structures or function names in tests

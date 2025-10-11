@@ -10,9 +10,9 @@ Input Adapter
 
 ## Integration Points
 
--   **Connects to Domain**: Uses `TicTacToe.start()` and `TicTacToe.play(state, position)` to evolve `GameState`
--   **External Dependencies**: Line-oriented input source (e.g., Node readline); injected presenter/output port (no direct stdout)
--   **Data Flow**: CLI line → parse/validate → domain call (with current state) → presenter notification(s)
+- **Connects to Domain**: Uses `TicTacToe.start()` and `TicTacToe.play(state, position)` to evolve `GameState`
+- **External Dependencies**: Line-oriented input source (e.g., Node readline); injected presenter/output port (no direct stdout)
+- **Data Flow**: CLI line → parse/validate → domain call (with current state) → presenter notification(s)
 
 ## Test Sequence (Adapter Responsibilities)
 
@@ -31,30 +31,30 @@ Input Adapter
 
 ## Test Strategy
 
--   **Primary approach**: Integration Tests
-    -   Simulate line input with a fake input source (no real stdin)
-    -   Inject a fake presenter; assert presenter method calls and arguments
-    -   Use real domain logic (no mocking of `TicTacToe`)
-    -   Do not write to console; all user-visible effects go through the presenter
+- **Primary approach**: Integration Tests
+  - Simulate line input with a fake input source (no real stdin)
+  - Inject a fake presenter; assert presenter method calls and arguments
+  - Use real domain logic (no mocking of `TicTacToe`)
+  - Do not write to console; all user-visible effects go through the presenter
 
 ## Technical Constraints
 
--   **Performance**: No constraints; operations complete in milliseconds
--   **Compatibility**: Node.js (ESM) on current project toolchain
--   **Security**: No sensitive data; local-only CLI
+- **Performance**: No constraints; operations complete in milliseconds
+- **Compatibility**: Node.js (ESM) on current project toolchain
+- **Security**: No sensitive data; local-only CLI
 
 ## Spec References
 
--   `specification-package/tictactoe-bdd-specification-package.md`
-    -   Game initialization, making moves, win detection, draw detection, and game state rules
+- `specification-package/tictactoe-bdd-specification-package.md`
+  - Game initialization, making moves, win detection, draw detection, and game state rules
 
 ## Dependencies
 
--   **Depends on**: Domain API in `src/domain/tic-tac-toe/game.ts` (`TicTacToe`, `GameState`)
--   **Blocks**: CLI renderer/output adapter (to format and print to terminal)
+- **Depends on**: Domain API in `src/domain/tic-tac-toe/game.ts` (`TicTacToe`, `GameState`)
+- **Blocks**: CLI renderer/output adapter (to format and print to terminal)
 
 ## Notes
 
--   Keep the adapter headless: accept an injected presenter interface (e.g., `presentState`, `presentError`, `presentHelp`, `presentGameOver`, `prompt`).
--   Maintain current `GameState` internally and pass the new state to the presenter after each valid command.
--   Map domain errors directly to presenter error messages using domain constants (avoids duplication).
+- Keep the adapter headless: accept an injected presenter interface (e.g., `presentState`, `presentError`, `presentHelp`, `presentGameOver`, `prompt`).
+- Maintain current `GameState` internally and pass the new state to the presenter after each valid command.
+- Map domain errors directly to presenter error messages using domain constants (avoids duplication).
