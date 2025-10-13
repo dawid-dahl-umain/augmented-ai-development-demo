@@ -4,15 +4,15 @@ Purpose: Parse CLI lines (e.g., `start`, `move 5`, `help`, `quit`), call the Tic
 
 ## Responsibilities
 
--   Parse and normalize commands from raw input lines
--   Maintain current `GameState` and evolve it via domain calls
--   Translate domain errors to presenter error messages
--   Notify presenter of state changes and game end
+- Parse and normalize commands from raw input lines
+- Maintain current `GameState` and evolve it via domain calls
+- Translate domain errors to presenter error messages
+- Notify presenter of state changes and game end
 
 ## Contract
 
--   Depends on `Presenter` port: `src/domain/tic-tac-toe/ports.ts`
--   Implements `CliInputAdapter` in `src/adapters/cli/input/cli-input-adapter.ts`
+- Depends on `Presenter` port: `src/domain/tic-tac-toe/ports.ts`
+- Implements `CliInputAdapter` in `src/adapters/cli/input/cli-input-adapter.ts`
 
 ```ts
 import type { Presenter } from "@/domain/tic-tac-toe/ports"
@@ -43,8 +43,8 @@ cli.handle("move 5")
 
 ## Tests
 
--   See `src/adapters/cli/input/cli-input-adapter.spec.ts`
+- See `src/adapters/cli/input/cli-input-adapter.spec.ts`
 
 ## Roadmap
 
--   Technical roadmap: `ai-roadmaps/technical/tictactoe-cli-input-adapter.md`
+- Technical roadmap: `ai-roadmaps/technical/tictactoe-cli-input-adapter.md`

@@ -10,13 +10,13 @@ No diagram needed - single-domain module with UI-agnostic state transitions; a t
 
 ## Spec references
 
--   `specification-package/tictactoe-bdd-specification-package.md`
-    -   Epic 4: Game End States
-        -   Feature: Game ends in a draw
-            -   Scenario: Board full with no winner → display "It's a draw!"; no further moves
-        -   Feature: Game state management
-            -   Scenario: Display current player's turn (covered)
-            -   Scenario: Cannot make moves after game ends (extend to draw)
+- `specification-package/tictactoe-bdd-specification-package.md`
+  - Epic 4: Game End States
+    - Feature: Game ends in a draw
+      - Scenario: Board full with no winner → display "It's a draw!"; no further moves
+    - Feature: Game state management
+      - Scenario: Display current player's turn (covered)
+      - Scenario: Cannot make moves after game ends (extend to draw)
 
 ## Test Scenario Sequence
 
@@ -33,16 +33,16 @@ No diagram needed - single-domain module with UI-agnostic state transitions; a t
 
 ## Boundaries & Dependencies
 
--   **External Systems**: None (unit tests mock I/O by design)
--   **Internal Patterns**: Pure, immutable domain transitions; arrow functions; no side effects in domain
--   **Integration Points**: UI text renderer consumes domain state to present board and messages
+- **External Systems**: None (unit tests mock I/O by design)
+- **Internal Patterns**: Pure, immutable domain transitions; arrow functions; no side effects in domain
+- **Integration Points**: UI text renderer consumes domain state to present board and messages
 
 ## Non-Functional Requirements
 
--   **Clarity**: End-state messages are concise and actionable
--   **Responsiveness**: Board/message updates occur immediately after a move
+- **Clarity**: End-state messages are concise and actionable
+- **Responsiveness**: Board/message updates occur immediately after a move
 
 ## Notes
 
--   Keep domain UI-agnostic: expose end state (game over without winner) rather than hard-coding UI strings; UI layer renders "It's a draw!".
--   Avoid prescribing new fields in the roadmap; let tests drive any domain surface needed to express draw state.
+- Keep domain UI-agnostic: expose end state (game over without winner) rather than hard-coding UI strings; UI layer renders "It's a draw!".
+- Avoid prescribing new fields in the roadmap; let tests drive any domain surface needed to express draw state.
