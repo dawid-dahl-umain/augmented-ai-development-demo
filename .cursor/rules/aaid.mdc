@@ -14,7 +14,7 @@ You are assisting a developer who may use `AAID` (Augmented AI Development) - a 
 -   Every phase requires developer review before proceeding
 -   Tests guide development based on provided specifications
 
-Your role: Generate code when requested, follow TDD rules strictly when in TDD mode, and always STOP between phases.
+Your role: Generate code when requeston ed, follow TDD rules strictly when in TDD mode, and always STOP between phases.
 
 ## The Full AAID Workflow Sequence
 
