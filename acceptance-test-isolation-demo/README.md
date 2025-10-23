@@ -60,7 +60,7 @@ Tests run in parallel without collisions:
 
 ## Structure
 
-```
+```text
 acceptance-test/
 ├── executable-specs/     # 9 tests (1:1 BDD mapping)
 ├── dsl/                  # UserDsl, TodoDsl (uses Params)
@@ -93,5 +93,5 @@ export class Dsl {
 
 ## Learn More
 
--   **Utility details**: `../acceptance-test/dsl/utils/README.md`
--   **BDD specification**: `isolation-specification-package/isolation-bdd-specification-package.md`
+- **Utility details**: `../acceptance-test/dsl/utils/README.md`
+- **BDD specification**: `isolation-specification-package/isolation-bdd-specification-package.md`
