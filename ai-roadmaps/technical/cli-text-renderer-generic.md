@@ -14,14 +14,14 @@ No diagram needed – presenter adapter emits view models → renderer selects t
 
 ## Integration Points
 
--   **Connects to Domain**: Via a presenter adapter implementing the domain `Presenter` port; the adapter maps domain events/state to renderer view models
--   **External Dependencies**: Writable sink (e.g., `process.stdout.write`) injected for testability
--   **Data Flow**: ViewModel → template(view, options) → string → sink.write
+- **Connects to Domain**: Via a presenter adapter implementing the domain `Presenter` port; the adapter maps domain events/state to renderer view models
+- **External Dependencies**: Writable sink (e.g., `process.stdout.write`) injected for testability
+- **Data Flow**: ViewModel → template(view, options) → string → sink.write
 
 ## Spec References
 
--   Rendering behavior guided by product/UX docs (e.g., ASCII layout, prompts)
--   Domain specifications are referenced by the presenter adapter, not by the renderer
+- Rendering behavior guided by product/UX docs (e.g., ASCII layout, prompts)
+- Domain specifications are referenced by the presenter adapter, not by the renderer
 
 ## Test Sequence
 
@@ -40,23 +40,23 @@ No diagram needed – presenter adapter emits view models → renderer selects t
 
 **Primary approach**: Integration Tests
 
--   Inject a fake writer to capture output; assert exact formatting and ordering
--   Provide minimal template set in tests; verify renderer applies them faithfully
--   Snapshot tests for complex layouts; string equality for simple cases
+- Inject a fake writer to capture output; assert exact formatting and ordering
+- Provide minimal template set in tests; verify renderer applies them faithfully
+- Snapshot tests for complex layouts; string equality for simple cases
 
 ## Technical Constraints
 
--   **Performance**: Millisecond rendering
--   **Compatibility**: Node.js (ESM), plain ASCII (opt-in ANSI)
--   **Security**: None (local I/O)
+- **Performance**: Millisecond rendering
+- **Compatibility**: Node.js (ESM), plain ASCII (opt-in ANSI)
+- **Security**: None (local I/O)
 
 ## Dependencies
 
--   **Depends on**: Template registry and writer abstraction
--   **Enables**: Domain-specific presenter adapters (e.g., TicTacToe) and consistent CLI UX
+- **Depends on**: Template registry and writer abstraction
+- **Enables**: Domain-specific presenter adapters (e.g., TicTacToe) and consistent CLI UX
 
 ## Notes
 
--   Keep renderer stateless and pure; side effects isolated to the injected writer
--   Templates are pure functions `(view) => string` (or `string[]`)
--   Centralize message text in the presenter adapter/templates; do not duplicate domain constants inside the renderer
+- Keep renderer stateless and pure; side effects isolated to the injected writer
+- Templates are pure functions `(view) => string` (or `string[]`)
+- Centralize message text in the presenter adapter/templates; do not duplicate domain constants inside the renderer

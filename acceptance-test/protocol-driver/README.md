@@ -49,10 +49,10 @@ export class CliDriver {
 
 **Key benefits:**
 
--   Test isolation via fresh driver instances
--   Dependency injection for testability
--   Stateful for convenience, scoped per test
--   Matches Dave's pattern (no result parameters in tests)
+- Test isolation via fresh driver instances
+- Dependency injection for testability
+- Stateful for convenience, scoped per test
+- Matches Dave's pattern (no result parameters in tests)
 
 ### Composition Root
 
@@ -73,13 +73,13 @@ export const createDsl = () => {
 
 Each test gets fresh instances:
 
--   `DslContext` for isolation
--   `CliDriver` for SUT interaction
--   Independent DSLs sharing the same driver
+- `DslContext` for isolation
+- `CliDriver` for SUT interaction
+- Independent DSLs sharing the same driver
 
 ### Internal Structure
 
-```
+```text
 CliDriver
 ├── lastResult (SUT response cache)
 ├── moveHistory (SUT input accumulator)

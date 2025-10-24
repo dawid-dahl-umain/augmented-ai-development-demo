@@ -6,9 +6,9 @@ Acceptance testing utilities for functional and temporal isolation in TypeScript
 
 ## Overview
 
--   `Params` maps DSL arguments (plain objects whose values are strings or string arrays) to named values.
--   `DslContext` keeps per-test sequences and global alias maps so test runs never clash.
--   Everything lives under `acceptance-test/dsl/utils/` and is exercised via Vitest or similar test.
+- `Params` maps DSL arguments (plain objects whose values are strings or string arrays) to named values.
+- `DslContext` keeps per-test sequences and global alias maps so test runs never clash.
+- Everything lives under `acceptance-test/dsl/utils/` and is exercised via Vitest or similar test.
 
 ## Getting Started
 
@@ -39,19 +39,19 @@ const tags = params.optionalList("tags", ["default-tag"])
 
 ### Supported Argument Styles
 
--   `new Params(context, { name: "Alice", role: "Accountant" })`
--   `new Params(context, { tags: ["tag-a", "tag-b"] })`
--   `new Params(context, { tags: "tag-a,tag-b" })`
+- `new Params(context, { name: "Alice", role: "Accountant" })`
+- `new Params(context, { tags: ["tag-a", "tag-b"] })`
+- `new Params(context, { tags: "tag-a,tag-b" })`
 
 ## Functional & Temporal Isolation
 
 Acceptance tests run against production-like systems with real databases and caches (slower than unit tests that mock everything). To keep test suites fast, we run tests in parallel. Isolation prevents tests from interfering with each other during parallel execution and ensures repeatable results across multiple runs.
 
--   **Functional isolation**: Each test creates its own unique data boundary (e.g., user account) as the primary isolation boundary. All test operations happen within that boundary's context (e.g., todos belong to that specific user). The first action in every test establishes this boundary via `dsl.user.hasAccount({ email: "user@test.com" })`, where `params.alias("email")` transforms it to "user@test.com1", "user@test.com2", etc. Tests share the same database but operate in isolated spaces, enabling safe parallel execution.
+- **Functional isolation**: Each test creates its own unique data boundary (e.g., user account) as the primary isolation boundary. All test operations happen within that boundary's context (e.g., todos belong to that specific user). The first action in every test establishes this boundary via `dsl.user.hasAccount({ email: "user@test.com" })`, where `params.alias("email")` transforms it to "user@test.com1", "user@test.com2", etc. Tests share the same database but operate in isolated spaces, enabling safe parallel execution.
 
--   **Temporal isolation**: `params.alias()` takes the value from your test arguments and ensures it gets a unique suffix across test runs. When you replay a test, "Buy milk" becomes "Buy milk1", "Buy milk2", producing deterministic results without colliding with previous data.
+- **Temporal isolation**: `params.alias()` takes the value from your test arguments and ensures it gets a unique suffix across test runs. When you replay a test, "Buy milk" becomes "Buy milk1", "Buy milk2", producing deterministic results without colliding with previous data.
 
--   **Readability helpers**: `params.optional()` provides sensible defaults so executable specifications stay concise and business-focused. This is not for isolation—it's for keeping tests readable by avoiding unnecessary technical details.
+- **Readability helpers**: `params.optional()` provides sensible defaults so executable specifications stay concise and business-focused. This is not for isolation—it's for keeping tests readable by avoiding unnecessary technical details.
 
 Together these properties allow test suites to run in parallel against a long-lived SUT while staying deterministic and easy to rerun.
 
@@ -61,10 +61,10 @@ Together these properties allow test suites to run in parallel against a long-li
 
 ## Provided Methods
 
--   `optional(name, default)` – returns supplied value or default (for test readability)
--   `alias(name)` – enforces presence and returns unique alias per context (for functional & temporal isolation)
--   `optionalSequence(name, start)` – returns supplied value or numbered sequence (convenience feature)
--   `optionalList(name, defaults)` – returns array of supplied values or defaults (for test readability)
+- `optional(name, default)` – returns supplied value or default (for test readability)
+- `alias(name)` – enforces presence and returns unique alias per context (for functional & temporal isolation)
+- `optionalSequence(name, start)` – returns supplied value or numbered sequence (convenience feature)
+- `optionalList(name, defaults)` – returns array of supplied values or defaults (for test readability)
 
 ## Tests
 
