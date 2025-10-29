@@ -1,52 +1,39 @@
+import type { PlayerMark, ProtocolDriver } from "../protocol-driver"
 import type { DslContext } from "./utils/context"
-import type { CliDriver } from "../protocol-driver/cli-driver"
-import type { CliResult } from "../protocol-driver"
 
 export class GameDsl {
     public constructor(
-        private readonly context: DslContext,
-        private readonly driver: CliDriver
-    ) {}
+        context: DslContext,
+        private readonly driver: ProtocolDriver
+    ) {
+        void context
+    }
 
     public async noGameInProgress(): Promise<void> {
-        this.driver.clearMoves()
+        await this.driver.resetScenario()
     }
 
     public async start(): Promise<void> {
-        this.driver.clearMoves()
-        await this.driver.executeMoves([])
+        await this.driver.startNewGame()
     }
 
     public async startNewGame(): Promise<void> {
-        await this.start()
-    }
-
-    public addMove(position: number): void {
-        this.driver.addMove(String(position))
+        await this.driver.startNewGame()
     }
 
     public async applyMoves(moves: ReadonlyArray<number>): Promise<void> {
-        this.driver.setMoveHistory(moves.map(String))
-        await this.driver.executeAccumulatedMoves()
+        await this.driver.playMoves(moves)
     }
 
     public async playMoves(movesCsv: string): Promise<void> {
-        const moves =
-            movesCsv.trim() === "" ? [] : movesCsv.split(",").map(m => m.trim())
-        this.driver.setMoveHistory(moves)
-        await this.driver.executeAccumulatedMoves()
-    }
-
-    public async playScenario(): Promise<void> {
-        await this.driver.executeAccumulatedMoves()
+        await this.driver.playMovesFromCsv(movesCsv)
     }
 
     public async enterInvalidInput(value: string): Promise<void> {
-        this.driver.addMove(value)
-        await this.driver.executeAccumulatedMoves()
+        await this.driver.submitInvalidInput(value)
     }
 
-    public confirmWinner(expected: "X" | "O"): void {
+    public confirmWinner(expected: PlayerMark): void {
         this.driver.confirmWinner(expected)
     }
 
@@ -83,11 +70,6 @@ export class GameDsl {
     }
 
     public confirmBoardIsEmpty(): void {
-        this.driver.confirmBoardDisplayed()
-        this.driver.confirmAllPositionsAreEmpty()
-    }
-
-    public getLastResult(): CliResult {
-        return this.driver.getLastResult()
+        this.driver.confirmBoardIsEmpty()
     }
 }

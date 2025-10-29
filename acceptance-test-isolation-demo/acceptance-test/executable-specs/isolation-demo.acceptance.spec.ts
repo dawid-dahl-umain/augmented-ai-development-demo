@@ -1,10 +1,13 @@
 import { beforeEach, describe, it } from "vitest"
+import { createProtocolDriver } from "../protocol-driver"
 import { Dsl } from "../dsl"
 
 let dsl: Dsl
 
 beforeEach(() => {
-    dsl = new Dsl()
+    const driver = createProtocolDriver()
+
+    dsl = new Dsl(driver)
 })
 
 describe("Epic: User Setup", () => {

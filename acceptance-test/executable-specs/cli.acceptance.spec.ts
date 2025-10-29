@@ -1,10 +1,14 @@
 import { beforeEach, describe, it } from "vitest"
+import { createProtocolDriver } from "../protocol-driver"
 import { Dsl } from "../dsl"
 
 let dsl: Dsl
 
 beforeEach(() => {
-    dsl = new Dsl()
+    const protocol = process.env.TEST_PROTOCOL ?? "cli"
+    const driver = createProtocolDriver(protocol)
+
+    dsl = new Dsl(driver)
 })
 
 describe("Epic: Game Initialization", () => {

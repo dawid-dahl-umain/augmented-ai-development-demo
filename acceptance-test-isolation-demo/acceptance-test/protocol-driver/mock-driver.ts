@@ -1,8 +1,8 @@
-import { expect } from "vitest"
+import type { ProtocolDriver } from "./interface"
 import type { MockTodoSystem, TodoStatus } from "../sut"
 
-export class MockDriver {
-    constructor(private readonly sut: MockTodoSystem) {}
+export class MockDriver implements ProtocolDriver {
+    public constructor(private readonly sut: MockTodoSystem) {}
 
     public createUser(name: string): void {
         this.sut.createUser(name)
@@ -10,7 +10,7 @@ export class MockDriver {
 
     public confirmUserExists(name: string): void {
         if (!this.sut.userExists(name)) {
-            expect.fail(`Expected user '${name}' to exist, but it does not`)
+            this.fail(`Expected user '${name}' to exist, but it does not`)
         }
     }
 
@@ -18,7 +18,7 @@ export class MockDriver {
         const todos = this.sut.getUserTodos(name)
 
         if (todos.length > 0) {
-            expect.fail(
+            this.fail(
                 `Expected user '${name}' to have empty todo list, but has ${todos.length} todos`
             )
         }
@@ -37,7 +37,7 @@ export class MockDriver {
         const todo = this.sut.getTodo(title)
 
         if (!todo) {
-            expect.fail(`Todo '${title}' does not exist`)
+            this.fail(`Todo '${title}' does not exist`)
         }
 
         this.sut.completeTodo(title)
@@ -47,7 +47,7 @@ export class MockDriver {
         const todo = this.sut.getTodo(title)
 
         if (!todo) {
-            expect.fail(`Expected todo '${title}' to exist, but it does not`)
+            this.fail(`Expected todo '${title}' to exist, but it does not`)
         }
     }
 
@@ -55,11 +55,11 @@ export class MockDriver {
         const todo = this.sut.getTodo(title)
 
         if (!todo) {
-            expect.fail(`Todo '${title}' does not exist`)
+            this.fail(`Todo '${title}' does not exist`)
         }
 
         if (todo.owner !== expectedOwner) {
-            expect.fail(
+            this.fail(
                 `Expected todo '${title}' to belong to '${expectedOwner}', but it belongs to '${todo.owner}'`
             )
         }
@@ -72,11 +72,11 @@ export class MockDriver {
         const todo = this.sut.getTodo(title)
 
         if (!todo) {
-            expect.fail(`Todo '${title}' does not exist`)
+            this.fail(`Todo '${title}' does not exist`)
         }
 
         if (todo.status !== expectedStatus) {
-            expect.fail(
+            this.fail(
                 `Expected todo '${title}' to have status '${expectedStatus}', but it has status '${todo.status}'`
             )
         }
@@ -89,11 +89,11 @@ export class MockDriver {
         const todo = this.sut.getTodo(title)
 
         if (!todo) {
-            expect.fail(`Todo '${title}' does not exist`)
+            this.fail(`Todo '${title}' does not exist`)
         }
 
         if (todo.description !== expectedDescription) {
-            expect.fail(
+            this.fail(
                 `Expected todo '${title}' to have description '${expectedDescription}', but it has '${todo.description}'`
             )
         }
@@ -103,7 +103,7 @@ export class MockDriver {
         const todos = this.sut.getUserTodos(owner)
 
         if (todos.length !== expectedCount) {
-            expect.fail(
+            this.fail(
                 `Expected user '${owner}' to have ${expectedCount} todos, but has ${todos.length}`
             )
         }
@@ -114,7 +114,7 @@ export class MockDriver {
         const hasTodo = pendingTodos.some(todo => todo.title === title)
 
         if (!hasTodo) {
-            expect.fail(
+            this.fail(
                 `Expected user '${owner}' to see pending todo '${title}', but it is not in their pending list`
             )
         }
@@ -125,9 +125,13 @@ export class MockDriver {
         const hasTodo = todos.some(todo => todo.title === title)
 
         if (hasTodo) {
-            expect.fail(
+            this.fail(
                 `Expected user '${owner}' not to see todo '${title}', but it is in their list`
             )
         }
+    }
+
+    private fail = (message: string): never => {
+        throw new Error(message)
     }
 }

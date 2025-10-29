@@ -60,11 +60,11 @@ Tests run in parallel without collisions:
 
 ## Structure
 
-```
+```text
 acceptance-test/
 ├── executable-specs/     # 9 tests (1:1 BDD mapping)
 ├── dsl/                  # UserDsl, TodoDsl (uses Params)
-├── protocol-driver/      # MockDriver (one driver, all assertions)
+├── protocol-driver/      # Mock driver interface + factory
 └── sut/                  # MockTodoSystem (in-memory)
 ```
 
@@ -72,15 +72,18 @@ acceptance-test/
 
 ```typescript
 export class Dsl {
-    constructor() {
-        const context = new DslContext() // Fresh per test
-        const sut = new MockTodoSystem()
-        const driver = new MockDriver(sut) // ONE driver
+    constructor(driver: ProtocolDriver) {
+        const context = new DslContext()
 
-        this.user = new UserDsl(context, driver) // Both share
-        this.todo = new TodoDsl(context, driver) // same driver
+        this.user = new UserDsl(context, driver)
+        this.todo = new TodoDsl(context, driver)
     }
 }
+
+beforeEach(() => {
+    const driver = createProtocolDriver() // wraps MockTodoSystem per test
+    dsl = new Dsl(driver)
+})
 ```
 
 ## vs. Main Demo

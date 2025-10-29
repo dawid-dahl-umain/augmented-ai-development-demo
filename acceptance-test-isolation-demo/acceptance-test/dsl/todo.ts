@@ -1,11 +1,11 @@
 import { DslContext } from "../../../acceptance-test/dsl/utils/context"
 import { Params, ParamsArgs } from "../../../acceptance-test/dsl/utils/params"
-import type { MockDriver } from "../protocol-driver"
+import type { ProtocolDriver } from "../protocol-driver"
 
 export class TodoDsl {
     public constructor(
         private readonly context: DslContext,
-        private readonly driver: MockDriver
+        private readonly driver: ProtocolDriver
     ) {}
 
     public createTodo(args: ParamsArgs = {}): void {

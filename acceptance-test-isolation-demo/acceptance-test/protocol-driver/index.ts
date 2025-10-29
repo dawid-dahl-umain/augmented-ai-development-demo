@@ -1,1 +1,2 @@
-export { MockDriver } from "./mock-driver"
+export { createProtocolDriver } from "./factory"
+export type { ProtocolDriver } from "./interface"

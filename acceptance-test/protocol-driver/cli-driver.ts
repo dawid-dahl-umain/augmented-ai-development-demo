@@ -1,58 +1,71 @@
 import { cliDriver as cliExecutor, type CliResult } from "./cli"
-import { CliOutputParser } from "./cli-output-parser"
 import { CliResponseValidator } from "./cli-response-validator"
-import { expect } from "vitest"
+import type { PlayerMark, ProtocolDriver } from "./interface"
 
-export class CliDriver {
+export class CliDriver implements ProtocolDriver {
     private lastResult: CliResult | null = null
     private moveHistory: string[] = []
 
-    public constructor(
-        private readonly parser: CliOutputParser,
-        private readonly validator: CliResponseValidator
-    ) {}
+    public constructor(private readonly validator: CliResponseValidator) {}
 
-    public async executeMoves(moves: ReadonlyArray<string>): Promise<void> {
-        const csv = moves.join(",")
-        const args = moves.length === 0 ? ["--moves", ""] : ["--moves", csv]
-        this.lastResult = await cliExecutor.run(["play", ...args])
-    }
-
-    public getMoveHistory(): ReadonlyArray<string> {
-        return this.moveHistory
-    }
-
-    public setMoveHistory(moves: ReadonlyArray<string>): void {
-        this.moveHistory = [...moves]
-    }
-
-    public addMove(position: string): void {
-        this.moveHistory.push(position)
-    }
-
-    public clearMoves(): void {
+    public async resetScenario(): Promise<void> {
         this.moveHistory = []
+        this.lastResult = null
     }
 
-    public async executeAccumulatedMoves(): Promise<void> {
-        await this.executeMoves(this.moveHistory)
+    public async startNewGame(): Promise<void> {
+        await this.resetScenario()
+        await this.executeMoves([])
     }
 
-    public extractBoardRows(
-        which: "initial" | "latest"
-    ): ReadonlyArray<string> {
-        return this.parser.extractBoardRows(this.ensureResult().stdout, which)
+    public async playMoves(moves: ReadonlyArray<number>): Promise<void> {
+        const sequence = moves.map(String)
+        await this.executeMoves(sequence)
     }
 
-    public getCurrentPlayer(which: "first" | "latest"): string | undefined {
-        return this.parser.getCurrentPlayer(this.ensureResult().stdout, which)
+    public async playMovesFromCsv(sequence: string): Promise<void> {
+        const normalizedSequence = sequence
+            .split(",")
+            .map(entry => entry.trim())
+            .filter(entry => entry.length > 0)
+
+        if (normalizedSequence.length === 0) {
+            await this.executeMoves([])
+            return
+        }
+
+        await this.executeMoves(normalizedSequence)
     }
 
-    public getCellValue(rows: ReadonlyArray<string>, position: number): string {
-        return this.parser.getCellValue(rows, position)
+    public async placeMark(position: number): Promise<void> {
+        const nextHistory = [...this.moveHistory, String(position)]
+        await this.executeMoves(nextHistory)
     }
 
-    public confirmPositionContains(position: number, mark: "X" | "O"): void {
+    public async submitInvalidInput(value: string): Promise<void> {
+        const nextHistory = [...this.moveHistory, value]
+        await this.executeMoves(nextHistory)
+    }
+
+    public confirmInitialPlayer(expected: PlayerMark): void {
+        this.validator.confirmInitialPlayer(
+            this.ensureResult().stdout,
+            expected
+        )
+    }
+
+    public confirmCurrentPlayer(expected: PlayerMark): void {
+        this.validator.confirmCurrentPlayer(
+            this.ensureResult().stdout,
+            expected
+        )
+    }
+
+    public confirmPositionEmpty(position: number): void {
+        this.validator.isPositionEmpty(this.ensureResult().stdout, position)
+    }
+
+    public confirmPositionContains(position: number, mark: PlayerMark): void {
         this.validator.confirmPositionContains(
             this.ensureResult().stdout,
             position,
@@ -60,24 +73,36 @@ export class CliDriver {
         )
     }
 
-    public isPositionEmpty(position: number): void {
-        this.validator.isPositionEmpty(this.ensureResult().stdout, position)
-    }
-
-    public confirmCurrentPlayer(player: "X" | "O"): void {
-        this.validator.confirmCurrentPlayer(this.ensureResult().stdout, player)
-    }
-
-    public confirmInitialPlayer(player: "X" | "O"): void {
-        this.validator.confirmInitialPlayer(this.ensureResult().stdout, player)
-    }
-
-    public confirmWinner(winner: "X" | "O"): void {
-        this.validator.confirmWinner(this.ensureResult().stdout, winner)
+    public confirmWinner(mark: PlayerMark): void {
+        this.validator.confirmWinner(this.ensureResult().stdout, mark)
     }
 
     public confirmDraw(): void {
         this.validator.confirmDraw(this.ensureResult().stdout)
+    }
+
+    public confirmMoveRejected(): void {
+        const result = this.ensureResult()
+        if (result.code === 0) {
+            throw new Error("Expected move rejection (non-zero exit code)")
+        }
+    }
+
+    public confirmMoveCompleted(): void {
+        this.validator.confirmMoveCompleted(this.ensureResult().stdout)
+    }
+
+    public confirmBoardTemplate(): void {
+        this.validator.confirmBoardDisplayed(this.ensureResult().stdout)
+    }
+
+    public confirmBoardIsEmpty(): void {
+        this.confirmBoardTemplate()
+        this.confirmAllPositionsAreEmpty()
+    }
+
+    public confirmAllPositionsAreEmpty(): void {
+        this.validator.confirmAllPositionsAreEmpty(this.ensureResult().stdout)
     }
 
     public confirmTextInOutput(text: string): void {
@@ -88,35 +113,20 @@ export class CliDriver {
         this.validator.confirmExitCode(this.ensureResult(), code)
     }
 
-    public confirmBoardDisplayed(): void {
-        this.validator.confirmBoardDisplayed(this.ensureResult().stdout)
-    }
-
-    public confirmAllPositionsAreEmpty(): void {
-        this.validator.confirmAllPositionsAreEmpty(this.ensureResult().stdout)
-    }
-
-    public confirmMoveCompleted(): void {
-        this.validator.confirmMoveCompleted(this.ensureResult().stdout)
-    }
-
-    public confirmMoveRejected(): void {
-        const result = this.ensureResult()
-        if (result.code === 0) {
-            expect.fail("Expected move rejection (non-zero exit code)")
-        }
-    }
-
-    public getLastResult(): CliResult {
-        return this.ensureResult()
+    private async executeMoves(moves: ReadonlyArray<string>): Promise<void> {
+        const csv = moves.join(",")
+        const args = moves.length === 0 ? ["--moves", ""] : ["--moves", csv]
+        this.lastResult = await cliExecutor.run(["play", ...args])
+        this.moveHistory = [...moves]
     }
 
     private ensureResult(): CliResult {
         if (!this.lastResult) {
-            expect.fail(
+            throw new Error(
                 "No CLI result captured. Did you execute an action first?"
             )
         }
+
         return this.lastResult
     }
 }

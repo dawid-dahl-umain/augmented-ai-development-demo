@@ -10,6 +10,8 @@
         "prestart": "pnpm run build",
         "test": "vitest run",
         "test:watch": "vitest",
+        "test:at": "vitest run acceptance-test/",
+        "test:at:watch": "vitest run acceptance-test/ --watch",
         "coverage": "vitest run --coverage",
         "lint": "eslint . -c eslint.config.js",
         "lint:fix": "eslint . -c eslint.config.js --fix",

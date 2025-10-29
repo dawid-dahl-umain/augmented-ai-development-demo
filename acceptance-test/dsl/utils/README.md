@@ -8,13 +8,13 @@ Acceptance testing utilities for functional and temporal isolation in TypeScript
 
 -   `Params` maps DSL arguments (plain objects whose values are strings or string arrays) to named values.
 -   `DslContext` keeps per-test sequences and global alias maps so test runs never clash.
--   Everything lives under `acceptance-test/dsl/utils/` and is exercised via Vitest or similar test.
+-   Everything lives under `acceptance-test/dsl/utils/` and is exercised via Vitest.
 
 ## Getting Started
 
 ```bash
-npm install
-npm run test
+pnpm install
+pnpm exec vitest run acceptance-test/dsl/utils
 ```
 
 ## Usage
@@ -75,36 +75,38 @@ Use `npm run test` or `npx vitest --coverage` to run the suite.
 ```ts
 // dsl/index.ts
 
-import { DslContext } from "./utils/DslContext"
-import { UserDsl } from "./user.dsl"
-import { TodoDsl } from "./todo.dsl"
-import { UIDriver } from "../protocol-driver/ui.driver"
+import type { ProtocolDriver } from "../protocol-driver"
+import { DslContext } from "./utils/context"
+import { UserDsl } from "./user"
+import { TodoDsl } from "./todo"
 
 export class Dsl {
     public readonly user: UserDsl
     public readonly todo: TodoDsl
 
-    constructor() {
+    constructor(driver: ProtocolDriver) {
         const context = new DslContext()
-        const uiDriver = new UIDriver(global.page)
 
-        this.user = new UserDsl(context, uiDriver)
-        this.todo = new TodoDsl(context, uiDriver)
+        this.user = new UserDsl(context, driver)
+        this.todo = new TodoDsl(context, driver)
     }
 }
 ```
 
 ```ts
-// executable-specs/archive-todos.spec.ts
+// executable-specs/archive-todos.acceptance.spec.ts
 
 import { beforeEach, describe, it } from "vitest"
+import { createProtocolDriver } from "../protocol-driver"
 import { Dsl } from "../dsl"
 
 describe("User archives completed todos", () => {
     let dsl: Dsl
 
     beforeEach(() => {
-        dsl = new Dsl()
+        const driver = createProtocolDriver(process.env.TEST_PROTOCOL ?? "cli")
+
+        dsl = new Dsl(driver)
     })
 
     it("should archive a completed todo", async () => {

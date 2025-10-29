@@ -1,9 +1,12 @@
-import { expect } from "vitest"
 import type { CliResult } from "./cli"
 import { CliOutputParser } from "./cli-output-parser"
 
 export class CliResponseValidator {
-    private readonly parser = new CliOutputParser()
+    public constructor(private readonly parser: CliOutputParser) {}
+
+    private fail = (message: string): never => {
+        throw new Error(message)
+    }
 
     public confirmPositionContains(
         stdout: string,
@@ -14,7 +17,7 @@ export class CliResponseValidator {
         const actualMark = this.parser.getCellValue(rows, position)
 
         if (actualMark !== expectedMark) {
-            expect.fail(
+            this.fail(
                 `Expected position ${position} to contain ${expectedMark}, but found ${actualMark}`
             )
         }
@@ -26,14 +29,14 @@ export class CliResponseValidator {
             const value = this.parser.getCellValue(rows, position)
 
             if (value === "X" || value === "O") {
-                expect.fail(
+                this.fail(
                     `Expected position ${position} to be empty, but found ${value}`
                 )
             }
         } catch (error) {
             const errorMessage =
                 error instanceof Error ? error.message : String(error)
-            expect.fail(
+            this.fail(
                 `Failed to verify position ${position} is empty: ${errorMessage}`
             )
         }
@@ -46,7 +49,7 @@ export class CliResponseValidator {
         const current = this.parser.getCurrentPlayer(stdout, "latest")
 
         if (current !== expectedPlayer) {
-            expect.fail(
+            this.fail(
                 `Expected ${expectedPlayer} to move, got ${
                     current ?? "unknown"
                 }`
@@ -61,7 +64,7 @@ export class CliResponseValidator {
         const initial = this.parser.getCurrentPlayer(stdout, "first")
 
         if (initial !== expectedPlayer) {
-            expect.fail(
+            this.fail(
                 `Expected initial player ${expectedPlayer}, got ${
                     initial ?? "unknown"
                 }`
@@ -71,27 +74,25 @@ export class CliResponseValidator {
 
     public confirmWinner(stdout: string, expectedWinner: "X" | "O"): void {
         if (!stdout.includes(`Player ${expectedWinner} wins!`)) {
-            expect.fail(`Expected winner ${expectedWinner}, output: ${stdout}`)
+            this.fail(`Expected winner ${expectedWinner}, output: ${stdout}`)
         }
     }
 
     public confirmDraw(stdout: string): void {
         if (!stdout.includes("It's a draw!")) {
-            expect.fail(`Expected draw, output: ${stdout}`)
+            this.fail(`Expected draw, output: ${stdout}`)
         }
     }
 
     public confirmTextInOutput(stdout: string, expectedText: string): void {
         if (!stdout.includes(expectedText)) {
-            expect.fail(`Expected output to contain: "${expectedText}"`)
+            this.fail(`Expected output to contain: "${expectedText}"`)
         }
     }
 
     public confirmExitCode(result: CliResult, expectedCode: number): void {
         if (result.code !== expectedCode) {
-            expect.fail(
-                `Expected exit code ${expectedCode}, got ${result.code}`
-            )
+            this.fail(`Expected exit code ${expectedCode}, got ${result.code}`)
         }
     }
 
@@ -108,7 +109,7 @@ export class CliResponseValidator {
 
             expected.forEach((line, index) => {
                 if (rows[index] !== line) {
-                    expect.fail(
+                    this.fail(
                         `Expected board row to be "${line}" but was "${
                             rows[index] ?? "undefined"
                         }"`
@@ -118,7 +119,7 @@ export class CliResponseValidator {
         } catch (error) {
             const errorMessage =
                 error instanceof Error ? error.message : String(error)
-            expect.fail(`Failed to verify board display: ${errorMessage}`)
+            this.fail(`Failed to verify board display: ${errorMessage}`)
         }
     }
 
@@ -127,9 +128,7 @@ export class CliResponseValidator {
         const hasMarks = rows.some(row => /[XO]/.test(row))
 
         if (hasMarks) {
-            expect.fail(
-                "Expected board rows to be empty but found player marks"
-            )
+            this.fail("Expected board rows to be empty but found player marks")
         }
     }
 
@@ -138,7 +137,7 @@ export class CliResponseValidator {
         const current = this.parser.getCurrentPlayer(stdout, "latest")
 
         if (previous === current) {
-            expect.fail("Expected turn to alternate after move")
+            this.fail("Expected turn to alternate after move")
         }
     }
 }

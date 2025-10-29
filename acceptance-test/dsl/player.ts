@@ -1,48 +1,38 @@
+import type { PlayerMark, ProtocolDriver } from "../protocol-driver"
 import { DslContext } from "./utils/context"
-import { Params, ParamsArgs } from "./utils/params"
-import type { CliDriver } from "../protocol-driver/cli-driver"
 
 export class PlayerDsl {
     public constructor(
-        private readonly context: DslContext,
-        private readonly driver: CliDriver
-    ) {}
+        context: DslContext,
+        private readonly driver: ProtocolDriver
+    ) {
+        void context
+    }
 
-    public async confirmStartsWith(id: "X" | "O"): Promise<void> {
+    public async confirmStartsWith(id: PlayerMark): Promise<void> {
         this.driver.confirmInitialPlayer(id)
     }
 
-    public async isTurn(id: "X" | "O"): Promise<void> {
+    public async isTurn(id: PlayerMark): Promise<void> {
         this.driver.confirmCurrentPlayer(id)
     }
 
     public async confirmPositionEmpty(position: number): Promise<void> {
-        this.driver.isPositionEmpty(position)
+        this.driver.confirmPositionEmpty(position)
     }
 
-    public async placeMark(_id: "X" | "O", position: number): Promise<void> {
-        this.driver.addMove(String(position))
-        await this.driver.executeAccumulatedMoves()
+    public async placeMark(_id: PlayerMark, position: number): Promise<void> {
+        await this.driver.placeMark(position)
     }
 
     public async confirmPositionHasMark(
-        id: "X" | "O",
+        id: PlayerMark,
         position: number
     ): Promise<void> {
         this.driver.confirmPositionContains(position, id)
     }
 
-    public async confirmNextTurn(id: "X" | "O"): Promise<void> {
+    public async confirmNextTurn(id: PlayerMark): Promise<void> {
         this.driver.confirmCurrentPlayer(id)
-    }
-
-    public registerPlayer(args: ParamsArgs = {}): string {
-        const params = new Params(this.context, { name: "Player", ...args })
-
-        return params.alias("name")
-    }
-
-    public reset(): void {
-        this.driver.clearMoves()
     }
 }

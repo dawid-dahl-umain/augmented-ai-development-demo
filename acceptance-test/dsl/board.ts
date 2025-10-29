@@ -1,48 +1,47 @@
+import type { PlayerMark, ProtocolDriver } from "../protocol-driver"
 import type { DslContext } from "./utils/context"
-import type { CliDriver } from "../protocol-driver/cli-driver"
 
 export class BoardDsl {
     public constructor(
-        private readonly context: DslContext,
-        private readonly driver: CliDriver
-    ) {}
+        context: DslContext,
+        private readonly driver: ProtocolDriver
+    ) {
+        void context
+    }
 
     public viewBoard(): void {
         // Viewing is implicit in CLI output
     }
 
     public confirmShowsGridWithPositionsNumberedOneThroughNine(): void {
-        this.driver.confirmBoardDisplayed()
+        this.driver.confirmBoardTemplate()
     }
 
     public confirmBoardStateDisplayed(): void {
-        this.confirmShowsGridWithPositionsNumberedOneThroughNine()
+        this.driver.confirmBoardTemplate()
     }
 
     public confirmUpdatedBoardDisplayed(): void {
-        this.confirmShowsGridWithPositionsNumberedOneThroughNine()
+        this.driver.confirmBoardTemplate()
     }
 
     public confirmAllPositionsAreEmpty(): void {
-        for (let position = 1; position <= 9; position++) {
-            this.driver.isPositionEmpty(position)
-        }
-    }
-
-    public confirmIsEmpty(): void {
-        this.driver.confirmBoardDisplayed()
         this.driver.confirmAllPositionsAreEmpty()
     }
 
+    public confirmIsEmpty(): void {
+        this.driver.confirmBoardIsEmpty()
+    }
+
     public confirmAllPositionsAvailable(): void {
-        this.confirmAllPositionsAreEmpty()
+        this.driver.confirmAllPositionsAreEmpty()
     }
 
     public isPositionEmpty(position: number): void {
-        this.driver.isPositionEmpty(position)
+        this.driver.confirmPositionEmpty(position)
     }
 
-    public confirmPositionContains(position: number, mark: "X" | "O"): void {
+    public confirmPositionContains(position: number, mark: PlayerMark): void {
         this.driver.confirmPositionContains(position, mark)
     }
 }
