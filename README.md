@@ -18,6 +18,9 @@ pnpm install
 # Run the demo game
 pnpm start -- --moves 1,4,2,5,3
 
+# Launch the browser UI (opens at http://localhost:5173)
+pnpm start:ui
+
 # Run acceptance tests (CLI suite)
 pnpm test:at
 
@@ -245,6 +248,13 @@ Player X wins!
 -   `4` - Position taken
 
 ---
+
+## Browser UI
+
+-   Build the project (only needed the first time or after changes): `pnpm run build`
+-   Start the static server: `pnpm start:ui`
+-   Open http://localhost:5173 to play via the web interface
+-   Use the board buttons to place marks, and "Start New Game" to reset the match
 
 ## Scripts
 
