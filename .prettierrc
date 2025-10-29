@@ -3,5 +3,13 @@
     "tabWidth": 4,
     "semi": false,
     "singleQuote": false,
-    "arrowParens": "avoid"
+    "arrowParens": "avoid",
+    "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
 }
