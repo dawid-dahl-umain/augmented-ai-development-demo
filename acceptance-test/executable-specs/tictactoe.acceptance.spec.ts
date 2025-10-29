@@ -102,6 +102,7 @@ describe("Epic: Making Moves", () => {
             await dsl.player.isTurn("O")
         })
 
+        // Web UI only exposes board positions 1-9, so this scenario is skipped there.
         it.skipIf(isWebProtocol)(
             "should not place mark outside board",
             async () => {
@@ -123,6 +124,7 @@ describe("Epic: Making Moves", () => {
             }
         )
 
+        // Web UI only accepts clicks on cells, so invalid text input cannot be exercised there.
         it.skipIf(isWebProtocol)(
             "should not place mark with invalid input",
             async () => {
@@ -295,6 +297,7 @@ describe("Epic: Technical Acceptance Criteria (Non-functional)", () => {
             await dsl.game.confirmOutputContains("O to move")
         })
 
+        // Web UI only allows board interaction via clicks, so invalid move text cannot be entered there.
         it.skipIf(isWebProtocol)("should clear error messages", async () => {
             // Given
             await dsl.game.start()
