@@ -1,3 +1,5 @@
+# System Under Test
+
 The system under test is the compiled game artifacts produced by `pnpm build`:
 
 - The **CLI protocol driver** spawns `node dist/index.js` and validates the textual transcript.
