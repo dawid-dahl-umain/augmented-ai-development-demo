@@ -1,5 +1,5 @@
 import type { CliResult } from "./cli"
-import { CliOutputParser } from "./cli-output-parser"
+import { CliOutputParser } from "./output-parser"
 
 export class CliResponseValidator {
     public constructor(private readonly parser: CliOutputParser) {}

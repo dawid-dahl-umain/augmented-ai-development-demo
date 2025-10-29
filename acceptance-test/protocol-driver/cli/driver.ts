@@ -1,6 +1,6 @@
 import { cliDriver as cliExecutor, type CliResult } from "./cli"
-import { CliResponseValidator } from "./cli-response-validator"
-import type { PlayerMark, ProtocolDriver } from "./interface"
+import { CliResponseValidator } from "./response-validator"
+import type { PlayerMark, ProtocolDriver } from "../interface"
 
 export class CliDriver implements ProtocolDriver {
     private lastResult: CliResult | null = null
@@ -47,25 +47,28 @@ export class CliDriver implements ProtocolDriver {
         await this.executeMoves(nextHistory)
     }
 
-    public confirmInitialPlayer(expected: PlayerMark): void {
+    public async confirmInitialPlayer(expected: PlayerMark): Promise<void> {
         this.validator.confirmInitialPlayer(
             this.ensureResult().stdout,
             expected
         )
     }
 
-    public confirmCurrentPlayer(expected: PlayerMark): void {
+    public async confirmCurrentPlayer(expected: PlayerMark): Promise<void> {
         this.validator.confirmCurrentPlayer(
             this.ensureResult().stdout,
             expected
         )
     }
 
-    public confirmPositionEmpty(position: number): void {
+    public async confirmPositionEmpty(position: number): Promise<void> {
         this.validator.isPositionEmpty(this.ensureResult().stdout, position)
     }
 
-    public confirmPositionContains(position: number, mark: PlayerMark): void {
+    public async confirmPositionContains(
+        position: number,
+        mark: PlayerMark
+    ): Promise<void> {
         this.validator.confirmPositionContains(
             this.ensureResult().stdout,
             position,
@@ -73,43 +76,43 @@ export class CliDriver implements ProtocolDriver {
         )
     }
 
-    public confirmWinner(mark: PlayerMark): void {
+    public async confirmWinner(mark: PlayerMark): Promise<void> {
         this.validator.confirmWinner(this.ensureResult().stdout, mark)
     }
 
-    public confirmDraw(): void {
+    public async confirmDraw(): Promise<void> {
         this.validator.confirmDraw(this.ensureResult().stdout)
     }
 
-    public confirmMoveRejected(): void {
+    public async confirmMoveRejected(): Promise<void> {
         const result = this.ensureResult()
         if (result.code === 0) {
             throw new Error("Expected move rejection (non-zero exit code)")
         }
     }
 
-    public confirmMoveCompleted(): void {
+    public async confirmMoveCompleted(): Promise<void> {
         this.validator.confirmMoveCompleted(this.ensureResult().stdout)
     }
 
-    public confirmBoardTemplate(): void {
+    public async confirmBoardTemplate(): Promise<void> {
         this.validator.confirmBoardDisplayed(this.ensureResult().stdout)
     }
 
-    public confirmBoardIsEmpty(): void {
-        this.confirmBoardTemplate()
-        this.confirmAllPositionsAreEmpty()
+    public async confirmBoardIsEmpty(): Promise<void> {
+        await this.confirmBoardTemplate()
+        await this.confirmAllPositionsAreEmpty()
     }
 
-    public confirmAllPositionsAreEmpty(): void {
+    public async confirmAllPositionsAreEmpty(): Promise<void> {
         this.validator.confirmAllPositionsAreEmpty(this.ensureResult().stdout)
     }
 
-    public confirmTextInOutput(text: string): void {
+    public async confirmTextInOutput(text: string): Promise<void> {
         this.validator.confirmTextInOutput(this.ensureResult().stdout, text)
     }
 
-    public confirmExitCode(code: number): void {
+    public async confirmExitCode(code: number): Promise<void> {
         this.validator.confirmExitCode(this.ensureResult(), code)
     }
 

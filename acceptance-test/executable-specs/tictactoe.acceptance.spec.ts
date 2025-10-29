@@ -2,10 +2,12 @@ import { beforeEach, describe, it } from "vitest"
 import { createProtocolDriver } from "../protocol-driver"
 import { Dsl } from "../dsl"
 
+const protocol = process.env.TEST_PROTOCOL ?? "cli"
+const isWebProtocol = protocol === "web"
+
 let dsl: Dsl
 
 beforeEach(() => {
-    const protocol = process.env.TEST_PROTOCOL ?? "cli"
     const driver = createProtocolDriver(protocol)
 
     dsl = new Dsl(driver)
@@ -21,10 +23,10 @@ describe("Epic: Game Initialization", () => {
             await dsl.game.startNewGame()
 
             // Then
-            dsl.board.confirmIsEmpty()
+            await dsl.board.confirmIsEmpty()
 
             // And
-            dsl.board.confirmAllPositionsAvailable()
+            await dsl.board.confirmAllPositionsAvailable()
 
             // And
             await dsl.player.confirmStartsWith("X")
@@ -38,10 +40,10 @@ describe("Epic: Game Initialization", () => {
             dsl.board.viewBoard()
 
             // Then
-            dsl.board.confirmShowsGridWithPositionsNumberedOneThroughNine()
+            await dsl.board.confirmShowsGridWithPositionsNumberedOneThroughNine()
 
             // And
-            dsl.board.confirmAllPositionsAreEmpty()
+            await dsl.board.confirmAllPositionsAreEmpty()
         })
     })
 })
@@ -54,13 +56,13 @@ describe("Epic: Making Moves", () => {
             await dsl.player.isTurn("X")
 
             // And
-            dsl.board.isPositionEmpty(5)
+            await dsl.board.isPositionEmpty(5)
 
             // When
             await dsl.player.placeMark("X", 5)
 
             // Then
-            dsl.board.confirmPositionContains(5, "X")
+            await dsl.board.confirmPositionContains(5, "X")
 
             // And
             await dsl.player.confirmNextTurn("O")
@@ -72,69 +74,75 @@ describe("Epic: Making Moves", () => {
             await dsl.player.placeMark("X", 1)
 
             // When
-            dsl.game.confirmMoveCompleted()
+            await dsl.game.confirmMoveCompleted()
 
             // Then
             await dsl.player.confirmNextTurn("O")
 
             // And
-            dsl.game.confirmOutputContains("O to move")
+            await dsl.game.confirmOutputContains("O to move")
         })
 
         it("should not place mark on occupied cell", async () => {
             // Given
             await dsl.game.start()
             await dsl.player.placeMark("X", 5)
-            dsl.board.confirmPositionContains(5, "X")
+            await dsl.board.confirmPositionContains(5, "X")
 
             // When
             await dsl.player.placeMark("O", 5)
 
             // Then
-            dsl.game.confirmMoveRejected()
+            await dsl.game.confirmMoveRejected()
 
             // And
-            dsl.game.confirmOutputContains("Position already taken at 5")
+            await dsl.game.confirmOutputContains("Position already taken at 5")
 
             // And
             await dsl.player.isTurn("O")
         })
 
-        it("should not place mark outside board", async () => {
-            // Given
-            await dsl.game.start()
-            await dsl.player.isTurn("X")
+        it.skipIf(isWebProtocol)(
+            "should not place mark outside board",
+            async () => {
+                // Given
+                await dsl.game.start()
+                await dsl.player.isTurn("X")
 
-            // When
-            await dsl.player.placeMark("X", 10)
+                // When
+                await dsl.player.placeMark("X", 10)
 
-            // Then
-            dsl.game.confirmMoveRejected()
+                // Then
+                await dsl.game.confirmMoveRejected()
 
-            // And
-            dsl.game.confirmShowsInvalidPosition()
+                // And
+                await dsl.game.confirmShowsInvalidPosition()
 
-            // And
-            await dsl.player.isTurn("X")
-        })
+                // And
+                await dsl.player.isTurn("X")
+            }
+        )
 
-        it("should not place mark with invalid input", async () => {
-            // Given
-            await dsl.game.start()
-            await dsl.player.isTurn("X")
+        it.skipIf(isWebProtocol)(
+            "should not place mark with invalid input",
+            async () => {
+                // Given
+                await dsl.game.start()
+                await dsl.player.isTurn("X")
 
-            // When
-            await dsl.game.enterInvalidInput("abc")
+                // When
+                await dsl.game.enterInvalidInput("abc")
 
-            // Then
-            dsl.game.confirmMoveRejected()
+                // Then
+                await dsl.game.confirmMoveRejected()
 
-            // And
-            dsl.game.confirmShowsInvalidInput()
+                // And
+                await dsl.game.confirmShowsInvalidInput()
 
-            // And
-            await dsl.player.isTurn("X")
-        })
+                // And
+                await dsl.player.isTurn("X")
+            }
+        )
     })
 })
 
@@ -150,14 +158,14 @@ describe("Epic: Win Detection", () => {
             await dsl.player.placeMark("X", 3)
 
             // Then
-            dsl.game.confirmWinner("X")
+            await dsl.game.confirmWinner("X")
 
             // And
-            dsl.game.confirmOutputContains("Player X wins!")
+            await dsl.game.confirmOutputContains("Player X wins!")
 
             // And
             await dsl.game.playMoves("1,4,2,5,3,6")
-            dsl.game.confirmOutputContains("Game is over")
+            await dsl.game.confirmOutputContains("Game is over")
         })
 
         it("should win with vertical line (middle column)", async () => {
@@ -168,14 +176,14 @@ describe("Epic: Win Detection", () => {
             await dsl.game.playMoves("1,3,4,7,8,5")
 
             // Then
-            dsl.game.confirmWinner("O")
+            await dsl.game.confirmWinner("O")
 
             // And
-            dsl.game.confirmOutputContains("Player O wins!")
+            await dsl.game.confirmOutputContains("Player O wins!")
 
             // And
             await dsl.game.playMoves("1,3,4,7,8,5,9")
-            dsl.game.confirmOutputContains("Game is over")
+            await dsl.game.confirmOutputContains("Game is over")
         })
 
         it("should win with diagonal line (top-left to bottom-right)", async () => {
@@ -188,14 +196,14 @@ describe("Epic: Win Detection", () => {
             await dsl.player.placeMark("X", 9)
 
             // Then
-            dsl.game.confirmWinner("X")
+            await dsl.game.confirmWinner("X")
 
             // And
-            dsl.game.confirmOutputContains("Player X wins!")
+            await dsl.game.confirmOutputContains("Player X wins!")
 
             // And
             await dsl.game.playMoves("1,2,5,6,9,7")
-            dsl.game.confirmOutputContains("Game is over")
+            await dsl.game.confirmOutputContains("Game is over")
         })
 
         it("should win with diagonal line (top-right to bottom-left)", async () => {
@@ -208,14 +216,14 @@ describe("Epic: Win Detection", () => {
             await dsl.player.placeMark("X", 7)
 
             // Then
-            dsl.game.confirmWinner("X")
+            await dsl.game.confirmWinner("X")
 
             // And
-            dsl.game.confirmOutputContains("Player X wins!")
+            await dsl.game.confirmOutputContains("Player X wins!")
 
             // And
             await dsl.game.playMoves("3,1,5,2,7,4")
-            dsl.game.confirmOutputContains("Game is over")
+            await dsl.game.confirmOutputContains("Game is over")
         })
     })
 })
@@ -230,14 +238,14 @@ describe("Epic: Game End States", () => {
             await dsl.game.playMoves("1,2,3,5,6,4,7,9,8")
 
             // Then
-            dsl.game.confirmDraw()
+            await dsl.game.confirmDraw()
 
             // And
-            dsl.game.confirmOutputContains("It's a draw!")
+            await dsl.game.confirmOutputContains("It's a draw!")
 
             // And
             await dsl.game.playMoves("1,2,3,5,6,4,7,9,8,1")
-            dsl.game.confirmOutputContains("Game is over")
+            await dsl.game.confirmOutputContains("Game is over")
         })
     })
 
@@ -250,23 +258,23 @@ describe("Epic: Game End States", () => {
             await dsl.game.playMoves("1")
 
             // Then
-            dsl.game.confirmOutputContains("O to move")
+            await dsl.game.confirmOutputContains("O to move")
 
             // And
-            dsl.board.confirmBoardStateDisplayed()
+            await dsl.board.confirmBoardStateDisplayed()
         })
 
         it("should not be possible to make moves after game ends", async () => {
             // Given
             await dsl.game.start()
             await dsl.game.playMoves("1,4,2,5,3")
-            dsl.game.confirmWinner("X")
+            await dsl.game.confirmWinner("X")
 
             // When
             await dsl.game.playMoves("1,4,2,5,3,6")
 
             // Then
-            dsl.game.confirmOutputContains("Game is over")
+            await dsl.game.confirmOutputContains("Game is over")
         })
     })
 })
@@ -281,13 +289,13 @@ describe("Epic: Technical Acceptance Criteria (Non-functional)", () => {
             await dsl.game.playMoves("1")
 
             // Then
-            dsl.board.confirmUpdatedBoardDisplayed()
+            await dsl.board.confirmUpdatedBoardDisplayed()
 
             // And
-            dsl.game.confirmOutputContains("O to move")
+            await dsl.game.confirmOutputContains("O to move")
         })
 
-        it("should clear error messages", async () => {
+        it.skipIf(isWebProtocol)("should clear error messages", async () => {
             // Given
             await dsl.game.start()
 
@@ -295,10 +303,10 @@ describe("Epic: Technical Acceptance Criteria (Non-functional)", () => {
             await dsl.game.playMoves("10")
 
             // Then
-            dsl.game.confirmOutputContains("Invalid position: choose 1-9")
+            await dsl.game.confirmOutputContains("Invalid position: choose 1-9")
 
             // And
-            dsl.game.confirmOutputContains("X to move")
+            await dsl.game.confirmOutputContains("X to move")
         })
     })
 })

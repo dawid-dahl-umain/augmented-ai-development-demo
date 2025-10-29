@@ -13,35 +13,38 @@ export class BoardDsl {
         // Viewing is implicit in CLI output
     }
 
-    public confirmShowsGridWithPositionsNumberedOneThroughNine(): void {
-        this.driver.confirmBoardTemplate()
+    public async confirmShowsGridWithPositionsNumberedOneThroughNine(): Promise<void> {
+        await this.driver.confirmBoardTemplate()
     }
 
-    public confirmBoardStateDisplayed(): void {
-        this.driver.confirmBoardTemplate()
+    public async confirmBoardStateDisplayed(): Promise<void> {
+        await this.driver.confirmBoardTemplate()
     }
 
-    public confirmUpdatedBoardDisplayed(): void {
-        this.driver.confirmBoardTemplate()
+    public async confirmUpdatedBoardDisplayed(): Promise<void> {
+        await this.driver.confirmBoardTemplate()
     }
 
-    public confirmAllPositionsAreEmpty(): void {
-        this.driver.confirmAllPositionsAreEmpty()
+    public async confirmAllPositionsAreEmpty(): Promise<void> {
+        await this.driver.confirmAllPositionsAreEmpty()
     }
 
-    public confirmIsEmpty(): void {
-        this.driver.confirmBoardIsEmpty()
+    public async confirmIsEmpty(): Promise<void> {
+        await this.driver.confirmBoardIsEmpty()
     }
 
-    public confirmAllPositionsAvailable(): void {
-        this.driver.confirmAllPositionsAreEmpty()
+    public async confirmAllPositionsAvailable(): Promise<void> {
+        await this.driver.confirmAllPositionsAreEmpty()
     }
 
-    public isPositionEmpty(position: number): void {
-        this.driver.confirmPositionEmpty(position)
+    public async isPositionEmpty(position: number): Promise<void> {
+        await this.driver.confirmPositionEmpty(position)
     }
 
-    public confirmPositionContains(position: number, mark: PlayerMark): void {
-        this.driver.confirmPositionContains(position, mark)
+    public async confirmPositionContains(
+        position: number,
+        mark: PlayerMark
+    ): Promise<void> {
+        await this.driver.confirmPositionContains(position, mark)
     }
 }

@@ -42,7 +42,7 @@ const createCell = (position: number, onClick: (position: number) => void) => {
 
 const formatStatus = (state: GameState): string => {
     if (state.isOver) {
-        if (state.isDraw) return "It’s a draw!"
+        if (state.isDraw) return "It's a draw!"
         return state.winner ? `Player ${state.winner} wins!` : "Game over"
     }
 
@@ -60,8 +60,6 @@ const findWinningLine = (
 
 const disableCell = (cell: CellButton, disabled: boolean) => {
     cell.dataset.disabled = String(disabled)
-    cell.ariaDisabled = disabled ? "true" : "false"
-    cell.disabled = disabled
 }
 
 const render = (
@@ -99,12 +97,17 @@ const clearMessage = (elements: Elements) => {
     elements.message.textContent = ""
 }
 
+const GAME_OVER_MESSAGE = "Game is over"
+
 const playMove = (
     state: GameState,
     position: number,
     elements: Elements
 ): GameState => {
-    if (state.isOver) return state
+    if (state.isOver) {
+        showMessage(elements, GAME_OVER_MESSAGE)
+        return state
+    }
 
     try {
         const next = TicTacToe.play(state, position)

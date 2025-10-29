@@ -10,15 +10,15 @@ export class PlayerDsl {
     }
 
     public async confirmStartsWith(id: PlayerMark): Promise<void> {
-        this.driver.confirmInitialPlayer(id)
+        await this.driver.confirmInitialPlayer(id)
     }
 
     public async isTurn(id: PlayerMark): Promise<void> {
-        this.driver.confirmCurrentPlayer(id)
+        await this.driver.confirmCurrentPlayer(id)
     }
 
     public async confirmPositionEmpty(position: number): Promise<void> {
-        this.driver.confirmPositionEmpty(position)
+        await this.driver.confirmPositionEmpty(position)
     }
 
     public async placeMark(_id: PlayerMark, position: number): Promise<void> {
@@ -29,10 +29,10 @@ export class PlayerDsl {
         id: PlayerMark,
         position: number
     ): Promise<void> {
-        this.driver.confirmPositionContains(position, id)
+        await this.driver.confirmPositionContains(position, id)
     }
 
     public async confirmNextTurn(id: PlayerMark): Promise<void> {
-        this.driver.confirmCurrentPlayer(id)
+        await this.driver.confirmCurrentPlayer(id)
     }
 }

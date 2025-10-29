@@ -33,43 +33,47 @@ export class GameDsl {
         await this.driver.submitInvalidInput(value)
     }
 
-    public confirmWinner(expected: PlayerMark): void {
-        this.driver.confirmWinner(expected)
+    public async confirmWinner(expected: PlayerMark): Promise<void> {
+        await this.driver.confirmWinner(expected)
     }
 
-    public confirmDraw(): void {
-        this.driver.confirmDraw()
+    public async confirmDraw(): Promise<void> {
+        await this.driver.confirmDraw()
     }
 
-    public confirmMoveRejected(): void {
-        this.driver.confirmMoveRejected()
+    public async confirmMoveRejected(): Promise<void> {
+        await this.driver.confirmMoveRejected()
     }
 
-    public confirmMoveCompleted(): void {
-        this.driver.confirmMoveCompleted()
+    public async confirmMoveCompleted(): Promise<void> {
+        await this.driver.confirmMoveCompleted()
     }
 
-    public confirmShowsInvalidPosition(): void {
-        this.driver.confirmTextInOutput("Invalid position: choose 1-9")
+    public async confirmShowsInvalidPosition(): Promise<void> {
+        await this.driver.confirmTextInOutput("Invalid position: choose 1-9")
     }
 
-    public confirmShowsInvalidInput(): void {
-        this.driver.confirmTextInOutput("Invalid input: enter a number 1-9")
+    public async confirmShowsInvalidInput(): Promise<void> {
+        await this.driver.confirmTextInOutput(
+            "Invalid input: enter a number 1-9"
+        )
     }
 
-    public confirmShowsPositionTakenAt(position: number): void {
-        this.driver.confirmTextInOutput(`Position already taken at ${position}`)
+    public async confirmShowsPositionTakenAt(position: number): Promise<void> {
+        await this.driver.confirmTextInOutput(
+            `Position already taken at ${position}`
+        )
     }
 
-    public confirmOutputContains(text: string): void {
-        this.driver.confirmTextInOutput(text)
+    public async confirmOutputContains(text: string): Promise<void> {
+        await this.driver.confirmTextInOutput(text)
     }
 
-    public confirmExitCode(expected: number): void {
-        this.driver.confirmExitCode(expected)
+    public async confirmExitCode(expected: number): Promise<void> {
+        await this.driver.confirmExitCode(expected)
     }
 
-    public confirmBoardIsEmpty(): void {
-        this.driver.confirmBoardIsEmpty()
+    public async confirmBoardIsEmpty(): Promise<void> {
+        await this.driver.confirmBoardIsEmpty()
     }
 }

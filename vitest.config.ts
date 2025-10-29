@@ -1,6 +1,10 @@
 import { defineConfig } from "vitest/config"
 import { fileURLToPath, URL } from "node:url"
 
+if (typeof process.loadEnvFile === "function") {
+    process.loadEnvFile()
+}
+
 export default defineConfig({
     resolve: {
         alias: {
