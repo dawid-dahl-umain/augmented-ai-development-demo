@@ -15,6 +15,7 @@ Executable specs resolve the driver at runtime:
 beforeEach(() => {
   const protocol = process.env.TEST_PROTOCOL ?? "cli"
   const driver = createProtocolDriver(protocol)
+
   dsl = new Dsl(driver)
 })
 ```
