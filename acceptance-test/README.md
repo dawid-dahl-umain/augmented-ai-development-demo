@@ -27,7 +27,7 @@ Set `TEST_PROTOCOL` to switch implementations. The default comes from the reposi
 - `cli` – executes the compiled CLI binary (default)
 - `web` – launches the static web UI through Playwright (requires browser installation)
 
-Copy `.env.example` to `.env` (or adjust as needed) before running tests. The defaults keep the suite on the CLI driver in headless mode; override per run via environment variables.
+Copy `.env.example` to `.env` (or adjust as needed) before running tests. The defaults keep the suite on the CLI driver in headless mode; override per run via environment variables. `UI_PORT` controls the local server port (default `5173`) and `UI_BASE_URL` lets you point the web driver at a different host while reusing the same port.
 
 #### Web driver lifecycle
 

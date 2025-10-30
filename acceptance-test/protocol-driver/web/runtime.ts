@@ -39,43 +39,34 @@ const ensureBuild = async (): Promise<void> => {
 }
 
 const uiPort = Number(process.env.UI_PORT ?? "5173")
-const baseUrl = process.env.UI_BASE_URL ?? `http://localhost:${uiPort}`
+const baseUrlEnv = process.env.UI_BASE_URL
+const baseUrl = baseUrlEnv
+    ? `${baseUrlEnv.replace(/\/$/, "")}:${uiPort}`
+    : `http://localhost:${uiPort}`
 
 export const getWebBaseUrl = (): string => baseUrl
 
 const normalizeFlag = (value: string): string => value.trim().toLowerCase()
 
-const isExplicitFalse = (value: string): boolean => {
-    const normalized = normalizeFlag(value)
-    return (
-        normalized === "false" ||
-        normalized === "0" ||
-        normalized === "no" ||
-        normalized === "off"
-    )
-}
+const TRUE_FLAG_VALUES = new Set(["true", "1", "yes", "on"])
+const FALSE_FLAG_VALUES = new Set(["false", "0", "no", "off"])
 
-const isExplicitTrue = (value: string): boolean => {
+const parseBooleanFlag = (value: string | undefined): boolean | undefined => {
+    if (value === undefined) return undefined
     const normalized = normalizeFlag(value)
-    return (
-        normalized === "true" ||
-        normalized === "1" ||
-        normalized === "yes" ||
-        normalized === "on"
-    )
+    if (TRUE_FLAG_VALUES.has(normalized)) return true
+    if (FALSE_FLAG_VALUES.has(normalized)) return false
+    return undefined
 }
 
 export const resolveHeadlessPreference = (): boolean => {
     const pwdebug = process.env.PWDEBUG
     if (pwdebug !== undefined) {
-        return isExplicitFalse(pwdebug) ? true : false
+        return parseBooleanFlag(pwdebug) === false ? true : false
     }
 
-    const flag = process.env.PLAYWRIGHT_HEADLESS
-    if (flag !== undefined) {
-        if (isExplicitFalse(flag)) return false
-        if (isExplicitTrue(flag)) return true
-    }
+    const headlessFlag = parseBooleanFlag(process.env.PLAYWRIGHT_HEADLESS)
+    if (headlessFlag !== undefined) return headlessFlag
 
     return true
 }
