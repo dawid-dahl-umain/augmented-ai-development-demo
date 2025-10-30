@@ -106,6 +106,7 @@ describe("Epic: Making Moves", () => {
 
     beforeEach(() => {
       const driver = createProtocolDriver(process.env.TEST_PROTOCOL ?? "cli")
+
       dsl = new Dsl(driver)
     })
 
