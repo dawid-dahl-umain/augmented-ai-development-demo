@@ -67,6 +67,11 @@ The test framework (Vitest) catches rejected promises and reports them as test f
 
 This keeps assertions framework-agnostic: drivers throw plain `Error` objects rather than relying on test framework assertion APIs.
 
+## Connection to the Production-like SUT
+
+- **CLI protocol** spawns the compiled binary (`node dist/index.js`) so tests exercise the same process users run in production.
+- **Web protocol** serves the compiled frontend (`dist/` + `public/`) via the Node HTTP server and drives it through Playwright, just like a real browser session.
+
 ## CLI driver highlights
 
 - Wraps the compiled CLI via `cli/cli.ts`, building the artifact on first use.
