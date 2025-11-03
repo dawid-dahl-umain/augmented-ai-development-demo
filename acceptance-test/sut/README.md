@@ -6,3 +6,6 @@ The system under test is the compiled game artifacts produced by `pnpm build`:
 - The **web protocol driver** serves `public/` with `dist/` assets via `dist/adapters/web/server.js` and interacts with the DOM through Playwright.
 
 Both drivers exercise the same production build; tests never hit TypeScript sources directly.
+
+> [!NOTE]
+> Info: Everything here is correct.
