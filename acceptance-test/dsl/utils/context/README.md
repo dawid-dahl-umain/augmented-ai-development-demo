@@ -13,8 +13,6 @@
 
 **Read on for the complete explanation...**
 
----
-
 ## Table of Contents
 
 - [Part 1: The Foundation - Understanding `static`](#part-1-the-foundation---understanding-static)
@@ -25,9 +23,7 @@
 - [Part 6: Real-World Analogy](#part-6-real-world-analogy)
 - [Summary & Key Takeaways](#summary--key-takeaways)
 - [Verification](#verification)
-- [References](#references)
-
----
+- [Under the Hood (Memory Mechanics)](#under-the-hood-memory-mechanics) ⭐ Optional deep dive
 
 ## Part 1: The Foundation - Understanding `static`
 
@@ -102,8 +98,6 @@ const ctx4 = new DslContext()
 ```
 
 **There is STILL only ONE static `globalSequenceNumbers` map in memory.** The number and location of instantiation points is irrelevant.
-
----
 
 ## Part 2: How DslContext Uses Static Properties
 
@@ -214,8 +208,6 @@ context1.alias("Acme Corp")
 └──────────────┘  └─────────────┘  └────────────┘
 ```
 
----
-
 ## Part 3: Why This Design? (Dave Farley's Three Isolations)
 
 Dave Farley identified three levels of isolation needed for reliable, fast acceptance tests:
@@ -291,8 +283,6 @@ Between test runs:
 - Static counter resets (Node process terminates, OS reclaims memory)
 - Database cleanup is separate (handled by `beforeAll`/test containers)
 - Both concerns are independent
-
----
 
 ## Part 4: Your Architecture in Action
 
@@ -383,8 +373,6 @@ Database after run: [
 
 All clients exist simultaneously without collision.
 
----
-
 ## Part 5: Multi-Process Worker Isolation
 
 ### The Challenge
@@ -474,8 +462,6 @@ Vitest sets `VITEST_POOL_ID` to "1", "2", "3", etc. for each worker process.
          No collision! Different names in database
 ```
 
----
-
 ## Part 6: Real-World Analogy
 
 Think of a **ticket machine at a bakery**:
@@ -507,8 +493,6 @@ If the bakery chain has multiple locations with separate ticket machines, they a
 - Location 2: "Uptown-#42", "Uptown-#43"
 
 No collision between locations (like worker IDs prevent cross-process collisions).
-
----
 
 ## Summary & Key Takeaways
 
@@ -548,8 +532,6 @@ Class Definition (loaded once)
        └─ ... (all point to same static)
 ```
 
----
-
 ## Verification
 
 ### In Your Console
@@ -578,10 +560,124 @@ pnpm test:acceptance
 
 **Key insight:** The static counter is process-bound (resets when Node process terminates), while database cleanup is handled separately by your test infrastructure.
 
----
+## Under the Hood (Memory Mechanics)
 
-## References
+**⏱️ 5 min read** | **Optional deep dive** - Skip if you're satisfied with the conceptual explanation
 
-- **Dave Farley's Course:** [ATDD/BDD - From Stories to Executable Specifications](https://courses.cd.training/pages/about-atdd-bdd-from-stories-to-executable-specifications)
-- **Original Java Implementation:** `/Users/dawiddahl/projects/AAID/atdd-course-examples/src/test/java/com/cd/acceptance/dsl/utils/Params.java`
-- **Your TypeScript Implementation:** `test/acceptance/dsl/utils/DslContext.ts`
+This section explains the actual memory allocation and lifecycle for readers who want to understand the implementation details.
+
+### When Is It Created?
+
+The static map is created during **module loading**, before any test code runs:
+
+```typescript
+// When Node.js executes: import { DslContext } from './DslContext'
+
+// 1. Node.js loads the module file
+// 2. Parses the class definition
+// 3. Evaluates static property initializers → new Map<string, number>()
+// 4. Allocates heap memory for the Map object
+// 5. Stores reference in DslContext.globalSequenceNumbers
+```
+
+**Timeline:**
+
+```
+T=0: pnpm test:acceptance starts Node.js process
+T=1: Module loader reads DslContext.ts
+T=2: Static initializer runs → Map created in heap (e.g., address 0x7f8a4c2000a0)
+T=3: Your test code starts running
+T=4-999: Tests create instances, all access the same Map at 0x7f8a4c2000a0
+T=1000: Process exits → OS reclaims all memory
+```
+
+### Where Does It Live?
+
+Static properties live in the **heap** (same as regular objects), referenced by the class object:
+
+```
+HEAP MEMORY:
+┌─────────────────────────────────────┐
+│  DslContext (class object)          │
+│  └─ globalSequenceNumbers → [ref]  │ ← Held by module system
+│                               │      │
+│                               ▼      │
+│  Map object { entries: [...] }      │ ← The actual static map
+│                                      │
+│  Instance 1 { aliases: {...} }      │ ← Test 1 instance
+│  Instance 2 { aliases: {...} }      │ ← Test 2 instance
+└─────────────────────────────────────┘
+
+All instances can access the Map via DslContext.globalSequenceNumbers
+```
+
+### Why Isn't It Garbage Collected?
+
+JavaScript's garbage collector traces references from "roots" (global scope, active stack frames, **module system**):
+
+```
+Root References:
+  └─ Module System (always alive)
+      └─ DslContext class object
+          └─ globalSequenceNumbers
+              └─ Map object
+
+Result: Always reachable → Never garbage collected during test run
+```
+
+**Contrast with instance properties:**
+
+```typescript
+{
+  const ctx = new DslContext() // Instance created
+  // ctx.aliases is reachable via 'ctx'
+}
+// ctx goes out of scope → instance becomes unreachable → garbage collected
+// But DslContext.globalSequenceNumbers is still reachable via module system
+```
+
+### When Is It Freed?
+
+**Only when the Node.js process terminates:**
+
+```
+Process Lifecycle:
+┌────────────────────────────────────────┐
+│ $ pnpm test:acceptance                 │
+│   └─ Node.js PID 12345                 │
+│       └─ Memory: 150 MB                │
+│           └─ Static map lives here     │
+│                                        │
+│ Tests run... counter accumulates...    │
+│                                        │
+│ process.exit(0)                        │
+│   └─ OS reclaims ALL 150 MB           │
+│       └─ Static map is GONE            │
+└────────────────────────────────────────┘
+
+Next run: $ pnpm test:acceptance
+  └─ New process (PID 12389)
+      └─ New memory space
+          └─ NEW static map (fresh counter)
+```
+
+The operating system doesn't selectively free objects - it reclaims the entire process memory space when the process terminates.
+
+### Why This Matters
+
+**Within a test run:**
+
+- Static map persists (counter accumulates: 1, 2, 3...)
+- Guarantees unique identifiers across all tests
+
+**Between test runs:**
+
+- New Node.js process = new memory space
+- Static map is recreated fresh (counter resets to start from 1)
+- Predictable, repeatable behavior
+
+**Process boundaries:**
+
+- Vitest workers = separate OS processes
+- Each has its own memory space and static map
+- Worker ID namespacing prevents collisions
