@@ -268,23 +268,29 @@ The tests create different clients in the database: `"Acme Corp1"` and `"Acme Co
 The **static** `globalSequenceNumbers` provides an ever-incrementing counter. Running the same test again produces different aliases.
 
 ```typescript
-// First test run
-it('test', async () => {
-  await dsl.clients.createClient({ name: 'Acme Corp' })  // "Acme Corp1"
-})
+// Within a single test run (one `pnpm test:acceptance` execution)
+Test 1: "Acme Corp1"
+Test 2: "Acme Corp2"  // Counter continues
+Test 3: "Acme Corp3"  // Still accumulating
 
-// Second test run (same test, new process)
-it('test', async () => {
-  await dsl.clients.createClient({ name: 'Acme Corp' })  // "Acme Corp1" again
-  // Because process restarted, static map is fresh
-})
-
-// Within same test run, running test twice
-Run 1: "Acme Corp1"
-Run 2: "Acme Corp2"  // Counter continues
+// Between test runs (separate Node process executions)
+First run:  "Acme Corp1", "Acme Corp2", "Acme Corp3"
+Second run: "Acme Corp1", "Acme Corp2", "Acme Corp3"  // Counter resets (fresh process memory)
 ```
 
-**Why this matters:** Data accumulates in the database during a test run. That's okay! Each test uses unique identifiers so they don't collide. Between test runs, the database is cleared (or you use a fresh container).
+**Why this matters:**
+
+Within a test run:
+
+- Static counter accumulates: 1, 2, 3...
+- Database accumulates: Data from all tests persists simultaneously
+- No collisions because each test gets unique identifiers
+
+Between test runs:
+
+- Static counter resets (Node process terminates, OS reclaims memory)
+- Database cleanup is separate (handled by `beforeAll`/test containers)
+- Both concerns are independent
 
 ---
 
@@ -548,19 +554,29 @@ Class Definition (loaded once)
 
 ### In Your Console
 
-Run tests twice to see the counter persist:
+**Within a single test run:**
 
 ```bash
-# First run
 pnpm test:acceptance
-# Database has: "Acme Corp1", "Acme Corp2", "Acme Corp3"
-
-# Second run (without cleanup)
-pnpm test:acceptance
-# Database now has: "Acme Corp4", "Acme Corp5", "Acme Corp6"
+# Static counter: 1 → 2 → 3 (accumulates during run)
+# Database after: "Acme Corp1", "Acme Corp2", "Acme Corp3" (all persist)
 ```
 
-The sequence continues because the static counter persists within each test run. When the Node.js process terminates, the OS reclaims all memory (including the static map), so the next run starts fresh.
+**Between separate test runs:**
+
+```bash
+# First execution
+pnpm test:acceptance
+# Counter: 1, 2, 3
+# Database: "Acme Corp1", "Acme Corp2", "Acme Corp3"
+
+# Second execution (new Node process)
+pnpm test:acceptance
+# Counter: 1, 2, 3 (resets - fresh process memory)
+# Database: depends on cleanup strategy (beforeAll clear OR fresh container)
+```
+
+**Key insight:** The static counter is process-bound (resets when Node process terminates), while database cleanup is handled separately by your test infrastructure.
 
 ---
 
