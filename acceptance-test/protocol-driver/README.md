@@ -102,3 +102,6 @@ export const createProtocolDriver = (protocol: string): ProtocolDriver => {
 ```
 
 Specs call `createProtocolDriver(process.env.TEST_PROTOCOL ?? "cli")` inside `beforeEach`, so switching protocols is strictly a runtime concern.
+
+> [!NOTE]
+> Info: Everything here is correct.
